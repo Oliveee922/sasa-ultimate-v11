@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#111827" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="嫂嫂V9" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<title>嫂嫂模擬器 Ultimate V11</title>
+<style>
+:root{
+  --bg:#080a12;--panel:#121622;--panel2:#1a2030;--line:#2b3248;--text:#f6f7fb;--muted:#aab1c5;
+  --accent:#d8b4fe;--accent2:#f0abfc;--danger:#fb7185;--good:#86efac;--warn:#fde68a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:radial-gradient(circle at top,#2b2140 0,#080a12 46%,#080a12 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Noto Sans SC",sans-serif;line-height:1.7}
+button,input,textarea,select{font:inherit}
+.app{max-width:1100px;margin:0 auto;min-height:100vh;padding:0 12px 92px}
+header{position:sticky;top:0;z-index:20;background:rgba(8,10,18,.8);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.07);margin:0 -12px 12px;padding:12px 14px}
+.header-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1{font-size:20px;margin:0}h2{font-size:20px;margin:8px 0 12px}h3{font-size:16px;margin:8px 0}
+.small{font-size:12.5px;color:var(--muted)}
+.card{background:rgba(18,22,34,.94);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 18px 42px rgba(0,0,0,.22)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.main{display:grid;grid-template-columns:320px 1fr;gap:12px}
+@media(max-width:860px){.grid,.main{grid-template-columns:1fr}.card{border-radius:16px;padding:14px}.app{padding-left:10px;padding-right:10px}.header-row{align-items:flex-start}.hide-mobile{display:none}}
+label{display:block;margin:10px 0 5px;color:#e7e9f6;font-size:14px}
+input,textarea,select{width:100%;background:#0d1019;border:1px solid var(--line);color:var(--text);border-radius:14px;padding:11px 12px;outline:none}
+textarea{min-height:94px;resize:vertical}
+button{cursor:pointer;border:0;border-radius:14px;padding:10px 12px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#090b12}
+button.secondary{background:#22283a;color:var(--text);border:1px solid var(--line)}
+button.danger{background:#3a1f29;color:#ffd8e0;border:1px solid #73304a}
+.btns{display:flex;gap:8px;flex-wrap:wrap}.btns button{flex:1;min-width:100px}
+.hidden{display:none!important}.story{white-space:pre-wrap;font-size:15.8px}.muted{color:var(--muted)}
+.tabs{display:flex;gap:7px;overflow-x:auto;padding:2px 0 8px}.tabs button{flex:0 0 auto;padding:8px 10px;font-size:13px}.active{outline:2px solid var(--accent)}
+.save-card{display:flex;gap:10px;align-items:stretch;justify-content:space-between;background:#101520;border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}
+.save-card .meta{flex:1}.save-title{font-weight:900}.tag{display:inline-block;background:#272e43;color:#eadcff;border-radius:999px;padding:2px 8px;font-size:12px;margin:3px 3px 3px 0}
+.checkgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;background:#0d1019;border:1px solid var(--line);border-radius:14px;padding:10px}
+.checkgrid label{display:flex;align-items:center;gap:7px;margin:0;font-size:13.5px}.checkgrid input{width:auto}@media(max-width:560px){.checkgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.status{display:grid;grid-template-columns:1fr;gap:8px}.pill{display:inline-block;background:#111827;border:1px solid var(--line);border-radius:999px;padding:5px 9px;font-size:12px;margin:3px}
+.meter{background:#101520;border:1px solid var(--line);border-radius:13px;padding:8px 10px}.meter-row{display:flex;justify-content:space-between;font-size:13px}.bar{height:7px;background:#070910;border-radius:99px;overflow:hidden;margin-top:6px}.fill{height:100%;background:var(--accent)}.fill.good{background:var(--good)}.fill.danger{background:var(--danger)}
+.portrait{height:320px;border:1px solid var(--line);border-radius:22px;background:radial-gradient(circle at 50% 10%,rgba(216,180,254,.3),transparent 25%),linear-gradient(160deg,#1e1730,#0d1019);position:relative;overflow:hidden}
+.hair{position:absolute;left:70px;right:70px;top:28px;height:135px;background:linear-gradient(135deg,#19151f,#514660);border-radius:48% 48% 20% 20%}.face{position:absolute;left:90px;right:90px;top:58px;height:122px;background:linear-gradient(#f1d1c6,#c79c91);border-radius:45%}.body{position:absolute;left:55px;right:55px;bottom:0;height:145px;background:linear-gradient(135deg,#2f3654,#111520);border-radius:70px 70px 0 0}.portrait .info{position:absolute;left:0;right:0;bottom:0;padding:70px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.78))}
+.choice button{width:100%;margin:7px 0;text-align:left;background:#202638;color:var(--text);border:1px solid var(--line);font-weight:650}
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(8,10,18,.88);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
+.bottom-inner{max-width:1100px;margin:auto;display:flex;gap:8px}.bottom-inner input{flex:1}.bottom-inner button{width:auto;white-space:nowrap}
+.timeline-item,.memory-item,.npc-item{background:#101520;border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0}.npc-item.help{border-color:#86efac}.npc-item.warn{border-color:#fde68a}.npc-item.block{border-color:#fb7185}.chatbox{background:#0f1320;border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0}.msg{background:#1b2030;border-radius:12px;padding:8px 10px;margin:6px 0}.msg b{color:#eadcff}.memory-item.pinned{border-color:#fde68a;box-shadow:0 0 0 1px rgba(253,230,138,.25)}.mini{font-size:12px;padding:6px 8px;border-radius:10px}.row-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:680px){.tools{grid-template-columns:1fr}}
+.platform{border-left:3px solid var(--accent);padding-left:10px;margin:10px 0}.sns-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}@media(max-width:680px){.sns-grid{grid-template-columns:1fr}}.hot{border-color:#fb7185!important}.mild{border-color:#fde68a!important}.safe{border-color:#86efac!important}.statement{background:#141923;border:1px solid #7c3aed;border-radius:14px;padding:10px;margin:8px 0}.threat{background:#101520;border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0}.threat.high{border-color:#fb7185}.threat.mid{border-color:#fde68a}.threat.low{border-color:#86efac}.photo{background:#0d1019;border:1px solid #334155;border-radius:12px;padding:9px;margin:7px 0}.trend{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #252b3c;padding:7px 0}.trend:last-child{border-bottom:0}.life-card{background:#101520;border:1px solid var(--line);border-radius:14px;padding:11px;margin:8px 0}.phone{max-width:390px;margin:auto;background:#05070d;border:1px solid #30384f;border-radius:32px;padding:14px;box-shadow:0 25px 60px rgba(0,0,0,.35)}.phone-screen{background:#101520;border-radius:24px;min-height:460px;padding:14px;overflow:hidden}.bubble-msg{max-width:82%;padding:9px 12px;border-radius:18px;margin:8px 0;background:#25304a}.bubble-msg.me{margin-left:auto;background:#d8b4fe;color:#111}.notif{background:#111827;border:1px solid var(--line);border-radius:16px;padding:10px;margin:8px 0}.item-card{background:#101520;border:1px solid var(--line);border-radius:14px;padding:10px;margin:8px 0}.memory-cluster{background:#0f1320;border:1px solid #3b4260;border-radius:14px;padding:10px;margin:8px 0}.hook{border-left:3px solid #fde68a;padding-left:10px;margin:8px 0;background:#101520;border-radius:10px;padding-top:8px;padding-bottom:8px}.weight{display:inline-block;min-width:42px;text-align:center;border-radius:999px;background:#2b3248;padding:2px 7px;font-size:12px}.final-banner{background:linear-gradient(135deg,rgba(216,180,254,.18),rgba(240,171,252,.08));border:1px solid rgba(216,180,254,.45);border-radius:20px;padding:15px;margin:12px 0}.kbd{font-family:ui-monospace,monospace;background:#0d1019;border:1px solid var(--line);border-radius:8px;padding:1px 6px}.backup-warn{background:#211827;border:1px solid #f0abfc;border-radius:14px;padding:10px;margin:8px 0}.item-card.risk{border-color:#fb7185}.bottomnav{position:fixed;left:0;right:0;bottom:58px;z-index:25;display:none;justify-content:center;pointer-events:none}.bottomnav-inner{pointer-events:auto;background:rgba(16,21,32,.9);border:1px solid var(--line);backdrop-filter:blur(14px);border-radius:999px;padding:6px;display:flex;gap:4px}.bottomnav button{font-size:12px;padding:7px 9px;border-radius:999px;background:#202638;color:var(--text)}@media(max-width:860px){.bottomnav{display:flex}.tabs{display:none}}.life-card.major{border-color:#d8b4fe}.family{border-color:#86efac}.crisis{border-color:#fb7185}.retire{border-color:#fde68a}.promptbox{white-space:pre-wrap;background:#080b12;border:1px solid var(--line);border-radius:14px;padding:12px;max-height:360px;overflow:auto;font-size:12.5px;color:#dfe3f7}.loading{opacity:.7;pointer-events:none}.warnbox{background:#221826;border:1px solid #7c3aed;border-radius:14px;padding:10px;margin:8px 0}
+.install-tip{background:#1d2435;border:1px dashed #6b7280;border-radius:16px;padding:12px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="header-row">
+    <div>
+      <h1>嫂嫂模擬器 Ultimate V11</h1>
+      <div class="small">最終整合版｜自用長期遊玩</div>
+    </div>
+    <div class="btns">
+      <button class="secondary" onclick="goHome()">首頁</button>
+      <button class="secondary" onclick="saveCurrent()">存檔</button>
+    </div>
+  </div>
+</header>
+
+<section id="home">
+  <div class="card">
+    <h2>首頁</h2>
+    <div class="final-banner">
+      <b>Ultimate V11 最終整合版</b><br>
+      已整合：多存檔、無限人生、韓娛資料庫、NPC、粉圈宇宙、人生宇宙、手機/Bubble、物品伏筆庫、PWA、AI長期記憶。
+    </div>
+    <div class="backup-warn small">重要：存檔存在你的瀏覽器裡。玩很久之後，記得定期按「匯出全部」備份。</div>
+    <p class="muted">這是 Ultimate V11 最終整合打磨版。存檔只存在你的瀏覽器裡，可開不同團、不同戀愛線。</p>
+    <div class="install-tip small">
+      iPhone 使用方式：把 ZIP 放到 GitHub Pages / Netlify / 本機伺服器後，用 Safari 開啟網址 → 分享 → 加入主畫面。<br>
+      單檔 HTML 可直接玩；完整 PWA 功能請使用 ZIP 專案部署。
+    </div>
+    <div id="pwaStatus" class="install-tip small">PWA 狀態檢查中……</div>
+    <div class="btns">
+      <button onclick="showNewGame()">新遊戲</button>
+      <button class="secondary" onclick="renderSaves()">讀取存檔</button>
+      <button class="secondary" onclick="showSettings()">API 設定</button>
+      <button class="secondary" onclick="exportAllSaves()">匯出全部</button>
+      <button class="secondary" onclick="document.getElementById('importFile').click()">匯入存檔</button>
+      <button class="secondary" onclick="showFinalGuide()">使用說明</button>
+      <button class="secondary" onclick="quickHealthCheck()">檢查狀態</button>
+      <input id="importFile" type="file" accept="application/json" class="hidden" onchange="importSavesFile(event)">
+    </div>
+  </div>
+  <div id="saveList" class="card">
+    <h2>存檔列表</h2>
+    <div id="saves"></div>
+  </div>
+</section>
+
+<section id="newGame" class="hidden">
+  <div class="card">
+    <h2>新遊戲設定</h2>
+    <div class="grid">
+      <div>
+        <label>存檔名稱</label>
+        <input id="saveTitle" placeholder="例如：RIIZE 元彬線" />
+      </div>
+      <div>
+        <label>戀愛對象</label>
+        <input id="target" placeholder="例如：RIIZE Wonbin、TXT Yeonjun、原創愛豆" />
+      </div>
+      <div>
+        <label>稱呼</label>
+        <input id="callName" value="隨機" />
+      </div>
+      <div>
+        <label>當前關係</label>
+        <select id="relation"><option>曖昧期</option><option>剛交往</option><option>秘密交往中</option><option>冷戰中</option><option>分手邊緣</option><option>互相試探</option><option>陌生但有火花</option></select>
+      </div>
+      <div>
+        <label>初始場景</label>
+        <select id="scene"><option>打歌後台</option><option>攝影棚</option><option>練習室</option><option>酒店走廊</option><option>機場停車場</option><option>演唱會後台</option><option>宿舍附近</option><option>品牌活動後台</option><option>頒獎禮後台</option><option>錄音室</option><option>便利店夜班</option><option>首爾雨夜街頭</option></select>
+      </div>
+      <div>
+        <label>模式</label>
+        <select id="mode"><option value="local">本機劇情引擎</option><option value="ai">AI 自動續寫</option></select>
+      </div>
+      <div style="grid-column:1/-1">
+        <label>我的身份，可多選</label>
+        <div class="checkgrid" id="roleChecks">
+          <label><input type="checkbox" value="粉絲">粉絲</label>
+          <label><input type="checkbox" value="經紀人">經紀人</label>
+          <label><input type="checkbox" value="演員同行">演員同行</label>
+          <label><input type="checkbox" value="愛豆同行">愛豆同行</label>
+          <label><input type="checkbox" value="練習生">練習生</label>
+          <label><input type="checkbox" value="造型師">造型師</label>
+          <label><input type="checkbox" value="財閥背景">財閥背景</label>
+          <label><input type="checkbox" value="成員妹妹">成員妹妹</label>
+          <label><input type="checkbox" value="品牌代言人">品牌代言人</label>
+          <label><input type="checkbox" value="模特兒">模特兒</label>
+          <label><input type="checkbox" value="MC／主持人">MC／主持人</label>
+        </div>
+      </div>
+      <div style="grid-column:1/-1">
+        <label>我的人物簡介，1000字內</label>
+        <textarea id="playerBio" maxlength="1000" placeholder="你的年齡階段、個性、職業、外貌氣質、過去經歷、與TA的關係補充……"></textarea>
+      </div>
+      <div style="grid-column:1/-1">
+        <label>補充設定</label>
+        <textarea id="extraNote" maxlength="1600" placeholder="希望慢熱/虐/甜/現實向、雷點、想要的劇情、成員妹妹補充等……"></textarea>
+      </div>
+      <div>
+        <label>親密描寫尺度</label>
+        <select id="matureLevel"><option value="soft">溫柔含蓄</option><option value="medium">成熟張力</option><option value="fade">淡出式</option></select>
+      </div>
+      <div>
+        <label>家庭線</label>
+        <select id="familyMode"><option value="off">先不開</option><option value="optional">未來可開</option><option value="on">開啟</option></select>
+      </div>
+    </div>
+    <label><input type="checkbox" id="adultConfirm" style="width:auto"> 我確認玩家與遊戲內戀愛角色皆為成年人</label>
+    <div class="btns">
+      <button onclick="startNewGame()">開始</button>
+      <button class="secondary" onclick="goHome()">返回</button>
+    </div>
+  </div>
+</section>
+
+<section id="guide" class="hidden">
+  <div class="card">
+    <h2>Ultimate V11 使用說明</h2>
+    <div class="story">1. 建議先用「新遊戲」建立不同團的存檔，例如 RIIZE 元彬線、TXT 然竣線。
+2. 平常玩單檔 HTML 就可以；如果要像 App，請使用 ZIP 專案部署到 GitHub Pages。
+3. 記憶庫會越玩越多，建議每隔一段時間按「整理摘要」「壓縮長期記憶」。
+4. 重要伏筆請釘選，例如手鍊、房卡、訊息撤回、Dispatch預告。
+5. 想接 AI：到 API 設定貼 OpenAI API key，遊戲模式選 AI 自動續寫。
+6. 不想接 AI：本機劇情引擎也能玩，但文字變化比較固定。
+7. 存檔只在你的瀏覽器，換手機前請先「匯出全部」。</div>
+    <button onclick="goHome()">回首頁</button>
+  </div>
+</section>
+
+<section id="settings" class="hidden">
+  <div class="card">
+    <h2>API 設定</h2>
+    <p class="small">自用版可以先把 API key 存在本機瀏覽器。若未來要做更安全版，再改成後端代理。</p>
+    <label>OpenAI API Key</label><input id="apiKey" type="password" placeholder="sk-..." />
+    <label>模型名稱</label><input id="modelName" value="gpt-4.1-mini" />
+    <label>AI 溫度，0.2 穩定，1.0 更有戲</label><input id="aiTemp" type="number" min="0" max="1.2" step="0.1" value="0.9" />
+    <label>每次帶入的重要記憶數</label><input id="memoryLimit" type="number" min="3" max="30" step="1" value="12" />
+    <button onclick="saveSettings()">儲存設定</button>
+  </div>
+</section>
+
+<section id="game" class="hidden main">
+  <aside>
+    <div class="portrait">
+      <div class="hair"></div><div class="face"></div><div class="body"></div>
+      <div class="info"><span class="tag">平行世界虛構</span><h2 id="pname">TA</h2><div id="pdesc" class="small"></div></div>
+    </div>
+    <div class="card">
+      <h3>狀態欄</h3>
+      <div id="status" class="status"></div>
+    </div>
+  </aside>
+  <main>
+    <div class="card">
+      <div class="tabs">
+        <button class="secondary active" onclick="tab('storyTab',this)">劇情</button>
+        <button class="secondary" onclick="tab('memTab',this)">記憶庫</button>
+        <button class="secondary" onclick="tab('timeTab',this)">時間線</button>
+        <button class="secondary" onclick="tab('npcTab',this)">NPC</button>
+        <button class="secondary" onclick="tab('snsTab',this)">粉圈</button>
+        <button class="secondary" onclick="tab('lifeTab',this)">人生</button>
+        <button class="secondary" onclick="tab('phoneTab',this)">手機</button>
+        <button class="secondary" onclick="tab('itemTab',this)">物品</button>
+        <button class="secondary" onclick="tab('aiTab',this);renderAIPrompt()">AI</button>
+      </div>
+      <div id="storyTab"><h2>劇情正文</h2><div id="story" class="story"></div><div id="choices" class="choice"></div></div>
+      <div id="memTab" class="hidden"><h2>記憶庫</h2>
+        <div class="card" style="background:#0f1320">
+          <h3>手動新增記憶</h3>
+          <input id="manualMemTitle" placeholder="記憶標題，例如：銀色手鍊" />
+          <textarea id="manualMemContent" placeholder="這件事之後希望 AI / 遊戲記得什麼？"></textarea>
+          <div class="btns">
+            <button onclick="manualAddMemory()">加入記憶</button>
+            <button class="secondary" onclick="summarizeMemories()">整理摘要</button>
+            <button class="secondary" onclick="compressLongMemory()">壓縮長期記憶</button>
+            <button class="secondary" onclick="findRecallHooks()">尋找可回收伏筆</button>
+          </div>
+        </div>
+        <h3>長期記憶摘要</h3><div id="memoryClusters"></div>
+        <h3>伏筆回收候選</h3><div id="recallHooks"></div>
+        <h3>全部記憶</h3><div id="memories"></div></div>
+      <div id="timeTab" class="hidden"><h2>人生時間線</h2>
+        <div class="card" style="background:#0f1320">
+          <h3>時間快轉</h3>
+          <div class="tools">
+            <button class="secondary" onclick="fastForward('month')">快轉 1 個月</button>
+            <button class="secondary" onclick="fastForward('season')">快轉到下一季</button>
+            <button class="secondary" onclick="fastForward('year')">快轉 1 年</button>
+            <button class="secondary" onclick="fastForward('big')">快轉到下一個大事件</button>
+          </div>
+        </div>
+        <div id="timeline"></div></div>
+      <div id="npcTab" class="hidden"><h2>NPC 關係網</h2>
+        <div class="card" style="background:#0f1320">
+          <h3>NPC 操作</h3>
+          <div class="tools">
+            <button class="secondary" onclick="triggerNpcScene('member')">觸發成員察覺</button>
+            <button class="secondary" onclick="triggerNpcScene('manager')">觸發經紀人干預</button>
+            <button class="secondary" onclick="triggerNpcScene('helper')">觸發幫忙隱瞞</button>
+            <button class="secondary" onclick="triggerNpcScene('chat')">生成群聊</button>
+          </div>
+        </div>
+        <div id="npcs"></div>
+        <h3>群聊 / 內部訊息</h3>
+        <div id="groupChats"></div>
+      </div>
+      <div id="snsTab" class="hidden"><h2>粉圈系統</h2>
+        <div class="card" style="background:#0f1320">
+          <h3>粉圈事件操作</h3>
+          <div class="sns-grid">
+            <button class="secondary" onclick="triggerFandom('bubble')">生成 Bubble 暗號</button>
+            <button class="secondary" onclick="triggerFandom('threads')">生成 Threads 搬運</button>
+            <button class="secondary" onclick="triggerFandom('theqoo')">生成 Theqoo 討論</button>
+            <button class="secondary" onclick="triggerFandom('naver')">推上 Naver 熱搜</button>
+            <button class="secondary" onclick="triggerFandom('sameitem')">觸發同款考古</button>
+            <button class="secondary" onclick="triggerFandom('dispatch')">觸發爆料預告</button>
+            <button class="secondary" onclick="triggerFandom('company')">生成公司聲明</button>
+            <button class="secondary" onclick="triggerFandom('wash')">粉絲洗廣場</button>
+            <button class="secondary" onclick="triggerXEvent('archive')">X 搬運帳發文</button>
+            <button class="secondary" onclick="triggerXEvent('cp')">CP粉整理時間線</button>
+            <button class="secondary" onclick="triggerFansite('fansite')">站姐拍到邊角</button>
+            <button class="secondary" onclick="triggerFansite('sasaeng')">私生跟拍</button>
+            <button class="secondary" onclick="triggerDispatch()">Dispatch 追查</button>
+            <button class="secondary" onclick="attemptTrendWash()">X 洗廣場</button>
+          </div>
+        </div>
+        <h3>輿論儀表板</h3>
+        <div id="fandomDash"></div>
+        <h3>X / Twitter 趨勢榜</h3>
+        <div id="xTrends"></div>
+        <h3>站姐 / 私生 / Dispatch</h3>
+        <div id="threats"></div>
+        <h3>偷拍庫</h3>
+        <div id="photoVault"></div>
+        <h3>粉圈動態</h3>
+        <div id="sns"></div>
+      </div>
+      <div id="phoneTab" class="hidden"><h2>手機互動</h2>
+        <div class="card" style="background:#0f1320">
+          <div class="sns-grid">
+            <button class="secondary" onclick="triggerPhone('bubble')">收到 Bubble</button>
+            <button class="secondary" onclick="triggerPhone('dm')">傳私人訊息</button>
+            <button class="secondary" onclick="triggerPhone('missed')">未接來電</button>
+            <button class="secondary" onclick="triggerPhone('delete')">訊息撤回</button>
+          </div>
+        </div>
+        <div id="phoneView"></div>
+      </div>
+      <div id="itemTab" class="hidden"><h2>物品伏筆庫</h2>
+        <div class="card" style="background:#0f1320">
+          <h3>新增物品</h3>
+          <input id="itemName" placeholder="例如：銀色手鍊、房卡、耳機貼紙" />
+          <textarea id="itemDesc" placeholder="這個物品的來歷、意義或風險"></textarea>
+          <div class="btns"><button onclick="manualAddItem()">加入物品</button><button class="secondary" onclick="triggerItemEvent()">觸發物品伏筆</button></div>
+        </div>
+        <div id="items"></div>
+      </div>
+      <div id="lifeTab" class="hidden"><h2>人生宇宙</h2>
+        <div class="card" style="background:#0f1320">
+          <h3>人生事件操作</h3>
+          <div class="sns-grid">
+            <button class="secondary" onclick="triggerLifeEvent('cohabit')">推進同居線</button>
+            <button class="secondary" onclick="triggerLifeEvent('public')">公開戀愛危機</button>
+            <button class="secondary" onclick="triggerLifeEvent('confirmPublic')">承認公開戀愛</button>
+            <button class="secondary" onclick="triggerLifeEvent('secretMarriage')">秘密結婚</button>
+            <button class="secondary" onclick="triggerLifeEvent('publicMarriage')">公開結婚</button>
+            <button class="secondary" onclick="triggerLifeEvent('family')">家庭線事件</button>
+            <button class="secondary" onclick="triggerLifeEvent('careerShift')">轉型/退團不退圈</button>
+            <button class="secondary" onclick="triggerLifeEvent('retire')">退休後人生</button>
+          </div>
+        </div>
+        <div id="life"></div>
+        <h3>人生事件簿</h3>
+        <div id="lifeEvents"></div>
+      </div>
+      <div id="aiTab" class="hidden"><h2>AI 續寫核心</h2>
+        <div class="warnbox small">AI 模式會把「狀態欄、重要記憶、NPC、時間線、粉圈」整理成提示包送出。若沒有 API key，會自動使用本機劇情引擎。</div>
+        <div class="btns">
+          <button class="secondary" onclick="toggleAIMode()">切換 AI / 本機模式</button>
+          <button class="secondary" onclick="renderAIPrompt()">重新整理提示包</button>
+          <button class="secondary" onclick="copyAIPrompt()">複製提示包</button>
+        </div>
+        <h3>目前模式</h3><div id="aiModeInfo"></div>
+        <h3>提示包預覽</h3><div id="aiPromptPreview" class="promptbox"></div>
+      </div>
+    </div>
+  </main>
+</section>
+</div>
+
+
+<div class="bottomnav">
+  <div class="bottomnav-inner">
+    <button onclick="tab('storyTab',this)">劇情</button>
+    <button onclick="tab('phoneTab',this)">手機</button>
+    <button onclick="tab('memTab',this)">記憶</button>
+    <button onclick="tab('snsTab',this)">粉圈</button>
+    <button onclick="tab('lifeTab',this)">人生</button>
+  </div>
+</div>
+
+<div id="bottom" class="bottom hidden">
+  <div class="bottom-inner">
+    <input id="freeAction" placeholder="自由輸入你的行動……" onkeydown="if(event.key==='Enter')choose('E',this.value||'沉默觀察')" />
+    <button onclick="choose('E',document.getElementById('freeAction').value||'沉默觀察')">送出</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

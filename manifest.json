@@ -1,0 +1,29 @@
+{
+  "name": "嫂嫂模擬器 Ultimate V11",
+  "short_name": "嫂嫂V11",
+  "description": "自用韓娛秘密戀人人生模擬器 Ultimate",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080a12",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
