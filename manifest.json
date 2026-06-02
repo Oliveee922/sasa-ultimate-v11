@@ -1,13 +1,13 @@
 {
-  "name": "嫂嫂模擬器 Ultimate V17",
-  "short_name": "嫂嫂V17",
-  "description": "自用韓娛秘密戀人人生模擬器 Ultimate V17",
+  "name": "💜",
+  "short_name": "💜",
+  "description": "自用韓娛秘密戀人人生模擬器 Ultimate V18",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#080a12",
-  "theme_color": "#111827",
+  "background_color": "#F8F3FF",
+  "theme_color": "#DCC6FF",
   "icons": [
     {
       "src": "icon-192.png",
