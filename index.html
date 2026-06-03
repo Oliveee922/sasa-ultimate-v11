@@ -176,6 +176,202 @@ input, textarea, select{
 }
 a{color:#7C3AED}
 
+
+/* V18.5 Bubble polish */
+header{
+  min-height:92px;
+  align-items:center;
+  gap:12px;
+  padding:16px 18px 14px;
+}
+header .brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+header h1{
+  font-size:24px;
+  line-height:1.05;
+  margin:0;
+  letter-spacing:-.02em;
+}
+header .subtitle{
+  font-size:13px;
+  color:#9A83BF;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:44vw;
+}
+.logo{
+  width:48px;
+  height:48px;
+  border-radius:18px;
+  font-size:28px;
+  flex:0 0 auto;
+}
+.top-actions{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-left:auto;
+  min-width:108px;
+}
+.top-actions button{
+  padding:10px 18px;
+  min-height:44px;
+  border-radius:18px;
+  font-size:15px;
+}
+.container{
+  padding-top:22px;
+}
+.card{
+  border-radius:26px!important;
+}
+.final-banner{
+  border-radius:24px!important;
+  font-size:16px;
+  line-height:1.75;
+}
+.final-banner b{
+  font-size:20px;
+  color:#4F3A78;
+}
+button{
+  border-radius:18px;
+  min-height:46px;
+  font-weight:800;
+}
+.btns{
+  gap:10px;
+}
+.btns button{
+  flex:1 1 140px;
+}
+.tabs{
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:6px;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{
+  flex:0 0 auto;
+  border-radius:999px;
+  padding:10px 16px;
+  min-height:42px;
+}
+.bottomnav{
+  bottom:18px;
+}
+.bottomnav-inner{
+  border-radius:28px;
+  padding:8px;
+  gap:6px;
+  max-width:92vw;
+  overflow-x:auto;
+}
+.bottomnav-inner::-webkit-scrollbar{display:none}
+.bottomnav button{
+  min-width:58px;
+  padding:10px 12px;
+  border-radius:22px;
+  font-size:13px;
+}
+.story{
+  border-radius:22px;
+  line-height:1.85;
+}
+.install-tip, .backup-warn{
+  border-radius:20px!important;
+  line-height:1.7;
+}
+.pill{
+  border-radius:999px;
+  padding:6px 10px;
+}
+#status{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.phone{
+  border-radius:38px;
+}
+.phone-screen{
+  border-radius:30px;
+}
+.phone-home{
+  gap:14px;
+}
+.appicon{
+  border-radius:22px;
+  min-height:74px;
+  box-shadow:0 10px 24px rgba(118,83,170,.10);
+}
+.appicon b{
+  margin-bottom:4px;
+}
+@media(max-width:680px){
+  header{
+    min-height:96px;
+    padding:14px 16px;
+  }
+  header h1{
+    font-size:23px;
+  }
+  header .subtitle{
+    max-width:42vw;
+    font-size:12px;
+  }
+  .top-actions{
+    min-width:98px;
+  }
+  .top-actions button{
+    padding:9px 14px;
+    font-size:14px;
+  }
+  .container{
+    padding:18px 14px 110px;
+  }
+  .card{
+    padding:20px!important;
+  }
+  .final-banner{
+    padding:18px!important;
+  }
+  .btns{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .btns button{
+    width:100%;
+    min-width:0;
+  }
+  .bottomnav button{
+    min-width:54px;
+    font-size:12px;
+    padding:9px 11px;
+  }
+}
+@media(max-width:420px){
+  header .subtitle{
+    display:none;
+  }
+  header h1{
+    font-size:26px;
+  }
+  .logo{
+    width:52px;
+    height:52px;
+  }
+  .top-actions{
+    min-width:96px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -184,7 +380,7 @@ a{color:#7C3AED}
   <div class="header-row">
     <div>
       <h1>💜</h1>
-      <div class="small">Bubble風｜白色淡紫｜明亮介面</div>
+      <div class="small">Bubble風｜美化修正｜清爽介面</div>
     </div>
     <div class="btns">
       <button class="secondary" onclick="goHome()">首頁</button>
@@ -197,11 +393,11 @@ a{color:#7C3AED}
   <div class="card">
     <h2>首頁</h2>
     <div class="final-banner">
-      <b>Ultimate V18 Bubble 明亮介面版</b><br>
-      已整合：多存檔、無限人生、韓娛資料庫、NPC、粉圈宇宙、人生宇宙、手機/Bubble、物品伏筆庫、PWA、AI長期記憶。V18 改為 Bubble 風白色淡紫介面，並更新 App 圖示與 App 名稱。
+      <b>Ultimate V18.5 Bubble 美化修正版</b><br>
+      已整合：多存檔、無限人生、韓娛資料庫、NPC、粉圈宇宙、人生宇宙、手機/Bubble、物品伏筆庫、PWA、AI長期記憶。V18.5 修正頂部排版、按鈕擁擠、底部導覽與整體 Bubble 視覺。
     </div>
     <div class="backup-warn small">重要：存檔存在你的瀏覽器裡。玩很久之後，記得定期按「匯出全部」備份。</div>
-    <p class="muted">這是 Ultimate V18 Bubble 明亮介面版。存檔只存在你的瀏覽器裡，可開不同團、不同戀愛線。</p>
+    <p class="muted">這是 Ultimate V18.5 Bubble 美化修正版。存檔只存在你的瀏覽器裡，可開不同團、不同戀愛線。</p>
     <div class="install-tip small">
       iPhone 使用方式：把 ZIP 放到 GitHub Pages / Netlify / 本機伺服器後，用 Safari 開啟網址 → 分享 → 加入主畫面。<br>
       單檔 HTML 可直接玩；完整 PWA 功能請使用 ZIP 專案部署。

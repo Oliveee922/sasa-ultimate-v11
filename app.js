@@ -1,6 +1,6 @@
 const rand=a=>a[Math.floor(Math.random()*a.length)];
 const clamp=n=>Math.max(0,Math.min(100,Math.round(n)));
-const APP_VERSION="Ultimate V18";
+const APP_VERSION="Ultimate V18.5";
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
 const KDB={
@@ -1183,8 +1183,8 @@ function downloadJSON(filename,obj){
  const a=document.createElement("a"); a.href=url; a.download=filename; a.click();
  setTimeout(()=>URL.revokeObjectURL(url),500);
 }
-function exportAllSaves(){downloadJSON("sasa-ultimate-v18-all-saves.json",{version:APP_VERSION,exportedAt:new Date().toISOString(),saves:getSaves()})}
-function exportOneSave(id){const s=getSaves().find(x=>x.id===id); if(!s)return; downloadJSON(`${s.title||"sasa-save"}-ultimate-v18.json`,{version:APP_VERSION,exportedAt:new Date().toISOString(),saves:[s]})}
+function exportAllSaves(){downloadJSON("sasa-ultimate-v18-5-all-saves.json",{version:APP_VERSION,exportedAt:new Date().toISOString(),saves:getSaves()})}
+function exportOneSave(id){const s=getSaves().find(x=>x.id===id); if(!s)return; downloadJSON(`${s.title||"sasa-save"}-ultimate-v18-5.json`,{version:APP_VERSION,exportedAt:new Date().toISOString(),saves:[s]})}
 function importSavesFile(ev){
  const file=ev.target.files[0]; if(!file)return;
  const reader=new FileReader();

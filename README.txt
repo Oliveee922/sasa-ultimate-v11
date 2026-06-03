@@ -1,1 +1,1 @@
-💜 Ultimate V18 Bubble 明亮介面版：白色/淡紫 Bubble 風、素色泡泡愛心 App icon、App 名稱改為 💜。
+💜 Ultimate V18.5 Bubble 美化修正版：頂部排版、底部導覽、按鈕、卡片陰影與 Bubble 明亮介面細節優化。
