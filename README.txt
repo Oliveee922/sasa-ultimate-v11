@@ -1,1 +1,1 @@
-💜 Ultimate V18.5 Bubble 美化修正版：頂部排版、底部導覽、按鈕、卡片陰影與 Bubble 明亮介面細節優化。
+💜 Ultimate V22 Idol Life Expansion：愛豆同行專屬設定、擔當可複選、團體設定、隊友生成、宿舍群、團體聊天室、隊友關係與愛豆人生事件。

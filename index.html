@@ -372,6 +372,189 @@ button{
   }
 }
 
+
+/* V19 Dream Bubble */
+.inbox-list{display:flex;flex-direction:column;gap:10px}
+.inbox-row{
+  display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #E4D4FF;
+  border-radius:22px;padding:12px;box-shadow:0 8px 20px rgba(118,83,170,.07)
+}
+.avatar-bubble{
+  width:46px;height:46px;border-radius:18px;background:linear-gradient(135deg,#C8A9FF,#F0E7FF);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;flex:0 0 auto
+}
+.inbox-main{min-width:0;flex:1}
+.inbox-main b{display:block;color:#4F3A78}
+.inbox-main span{display:block;color:#8A7AA8;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unread-dot{width:10px;height:10px;border-radius:99px;background:#B78DFF;box-shadow:0 0 0 5px rgba(183,141,255,.12)}
+.feed-card{
+  background:#fff;border:1px solid #E4D4FF;border-radius:24px;padding:14px;margin:10px 0;
+  box-shadow:0 10px 26px rgba(118,83,170,.07)
+}
+.feed-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.feed-name{font-weight:900;color:#4F3A78}
+.feed-platform{font-size:12px;color:#8A7AA8}
+.cozy-room{
+  background:linear-gradient(135deg,#FFFFFF,#F3EAFF);border:1px solid #E4D4FF;border-radius:26px;
+  padding:18px;margin:12px 0;box-shadow:0 12px 34px rgba(118,83,170,.08)
+}
+.room-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.room-item{background:rgba(255,255,255,.82);border:1px solid #E9DDF9;border-radius:18px;padding:12px;color:#6D4EB3}
+.memory-album-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.memory-photo{
+  aspect-ratio:1/1;background:linear-gradient(135deg,#EAD7FF,#FFFFFF);border:1px solid #E4D4FF;
+  border-radius:22px;padding:12px;display:flex;flex-direction:column;justify-content:flex-end;
+  box-shadow:0 10px 24px rgba(118,83,170,.08)
+}
+.memory-photo b{color:#4F3A78}
+.memory-photo span{font-size:12px;color:#8A7AA8}
+.push-toast{
+  position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1000;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #E4D4FF;
+  box-shadow:0 18px 45px rgba(118,83,170,.18);border-radius:22px;padding:12px 16px;
+  max-width:88vw;color:#4F3A78;display:none
+}
+.push-toast.show{display:block;animation:popIn .25s ease-out}
+@keyframes popIn{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+.big-phone-button{
+  display:flex;align-items:center;justify-content:center;gap:8px;border-radius:22px!important;
+  background:linear-gradient(135deg,#C8A9FF,#EBD8FF)!important;color:#fff!important
+}
+@media(max-width:420px){.memory-album-grid{grid-template-columns:1fr}.room-grid{grid-template-columns:1fr}}
+
+
+/* V20 Phone OS */
+.phone-os-shell{
+  background:linear-gradient(180deg,#fff,#F8F3FF);
+  border:1px solid #E4D4FF;
+  border-radius:36px;
+  padding:16px;
+  box-shadow:0 24px 60px rgba(118,83,170,.16);
+}
+.phone-statusbar{
+  display:flex;justify-content:space-between;align-items:center;
+  color:#6D4EB3;font-weight:900;margin-bottom:12px;padding:0 4px;
+}
+.phone-os-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0 18px;
+}
+.phone-os-app{
+  min-height:76px;border-radius:24px;border:1px solid #E4D4FF;background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  box-shadow:0 10px 24px rgba(118,83,170,.08);font-size:11px;color:#6D4EB3;font-weight:800;
+}
+.phone-os-app .emoji{font-size:26px}
+.phone-os-app.primary{background:linear-gradient(135deg,#C8A9FF,#EBD8FF);color:#fff}
+.phone-os-section{
+  background:rgba(255,255,255,.92);border:1px solid #E4D4FF;border-radius:26px;
+  padding:14px;margin:12px 0;box-shadow:0 10px 28px rgba(118,83,170,.07);
+}
+.phone-os-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.phone-os-title h3{margin:0;color:#4F3A78}
+.badge{
+  background:#B78DFF;color:#fff;border-radius:999px;min-width:24px;height:24px;
+  display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;
+}
+.message-thread{
+  display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #EFE7FB;
+}
+.message-thread:last-child{border-bottom:0}
+.thread-avatar{
+  width:48px;height:48px;border-radius:18px;background:linear-gradient(135deg,#DCC6FF,#fff);
+  display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto;
+}
+.thread-body{flex:1;min-width:0}
+.thread-body b{display:block;color:#4F3A78}
+.thread-body span{display:block;color:#8A7AA8;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thread-meta{text-align:right;font-size:12px;color:#9A83BF}
+.call-item,.spotify-item,.dispatch-item{
+  background:#fff;border:1px solid #EFE7FB;border-radius:18px;padding:12px;margin:8px 0;
+  display:flex;justify-content:space-between;gap:10px;align-items:center;
+}
+.call-item b,.spotify-item b,.dispatch-item b{color:#4F3A78}
+.sns-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.sns-tabs span{
+  background:#F1E8FF;color:#6D4EB3;border:1px solid #E4D4FF;border-radius:999px;
+  padding:7px 12px;font-weight:800;font-size:12px;white-space:nowrap;
+}
+.album-wall{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.album-tile{
+  aspect-ratio:1/1;border-radius:20px;background:linear-gradient(135deg,#F1E8FF,#fff);
+  border:1px solid #E4D4FF;padding:10px;display:flex;align-items:flex-end;
+  color:#6D4EB3;font-size:12px;font-weight:900;box-shadow:0 8px 18px rgba(118,83,170,.08)
+}
+.spotify-cover{
+  width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#86efac,#C8A9FF);
+  display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto;
+}
+.phone-mode-switch{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px}
+.phone-mode-switch button{flex:0 0 auto;min-height:38px;padding:8px 12px;border-radius:999px;font-size:12px}
+@media(max-width:420px){
+  .phone-os-grid{grid-template-columns:repeat(4,1fr);gap:8px}
+  .phone-os-app{min-height:68px;border-radius:20px;font-size:10px}
+  .phone-os-app .emoji{font-size:23px}
+  .album-wall{grid-template-columns:repeat(2,1fr)}
+}
+
+
+/* V21 blackbox */
+.blackbox-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.blackbox-card{
+  background:#fff;border:1px solid #E4D4FF;border-radius:24px;padding:14px;margin:10px 0;
+  box-shadow:0 10px 28px rgba(118,83,170,.08)
+}
+.blackbox-card.danger{border-color:#FCA5A5;background:#FFF7F7}
+.blackbox-card.info{border-color:#BFDBFE;background:#F8FBFF}
+.blackbox-card.secret{border-color:#DCC6FF;background:#FCF8FF}
+.snapshot{
+  border-left:4px solid #B78DFF;background:#fff;border-radius:14px;padding:10px 12px;margin:8px 0;
+  box-shadow:0 6px 18px rgba(118,83,170,.06)
+}
+.gossip{
+  background:linear-gradient(135deg,#fff,#F8F3FF);border:1px solid #E4D4FF;border-radius:22px;
+  padding:13px;margin:10px 0
+}
+.gossip .rumor{font-weight:900;color:#4F3A78}
+.gossip .truth{font-size:12px;color:#8A7AA8;margin-top:5px}
+.bubble-sub{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;
+  border:1px solid #E4D4FF;border-radius:20px;padding:12px;margin:8px 0
+}
+.deal-meter{height:10px;background:#EFE7FB;border-radius:99px;overflow:hidden;margin-top:8px}
+.deal-meter div{height:100%;background:linear-gradient(90deg,#C8A9FF,#F87171)}
+@media(max-width:680px){.blackbox-grid{grid-template-columns:1fr}}
+
+
+/* V22 Idol Life */
+.idol-extra{
+  background:#fff;border:1px solid #E4D4FF;border-radius:24px;padding:16px;margin:14px 0;
+  box-shadow:0 10px 28px rgba(118,83,170,.07)
+}
+.role-grid,.idol-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px
+}
+.role-chip{
+  background:#fff;border:1px solid #E4D4FF;border-radius:18px;padding:10px 12px;
+  display:flex;align-items:center;gap:8px;color:#4F3A78;font-weight:800
+}
+.role-chip input{width:20px;height:20px;accent-color:#B78DFF}
+.member-card{
+  background:linear-gradient(135deg,#fff,#F8F3FF);border:1px solid #E4D4FF;border-radius:22px;
+  padding:14px;margin:10px 0;box-shadow:0 10px 24px rgba(118,83,170,.07)
+}
+.member-card b{color:#4F3A78}
+.member-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.member-tags span{background:#F1E8FF;color:#6D4EB3;border:1px solid #E4D4FF;border-radius:999px;padding:4px 8px;font-size:12px;font-weight:800}
+.dorm-chat{
+  background:#fff;border:1px solid #E4D4FF;border-radius:22px;padding:12px;margin:8px 0
+}
+.dorm-chat .speaker{font-weight:900;color:#6D4EB3}
+.idol-event{
+  background:#fff;border-left:4px solid #B78DFF;border-radius:16px;padding:10px 12px;margin:8px 0;
+  box-shadow:0 8px 20px rgba(118,83,170,.06)
+}
+@media(max-width:680px){.role-grid,.idol-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -380,7 +563,7 @@ button{
   <div class="header-row">
     <div>
       <h1>💜</h1>
-      <div class="small">Bubble風｜美化修正｜清爽介面</div>
+      <div class="small">愛豆人生｜團體隊友｜宿舍群</div>
     </div>
     <div class="btns">
       <button class="secondary" onclick="goHome()">首頁</button>
@@ -393,11 +576,11 @@ button{
   <div class="card">
     <h2>首頁</h2>
     <div class="final-banner">
-      <b>Ultimate V18.5 Bubble 美化修正版</b><br>
-      已整合：多存檔、無限人生、韓娛資料庫、NPC、粉圈宇宙、人生宇宙、手機/Bubble、物品伏筆庫、PWA、AI長期記憶。V18.5 修正頂部排版、按鈕擁擠、底部導覽與整體 Bubble 視覺。
+      <b>Ultimate V22 Idol Life Expansion 實裝版</b><br>
+      已整合：多存檔、無限人生、韓娛資料庫、NPC、粉圈宇宙、人生宇宙、手機/Bubble、物品伏筆庫、PWA、AI長期記憶。V22 實裝愛豆同行專屬設定、擔當可複選、團體設定、隊友生成、宿舍群與愛豆人生事件。
     </div>
     <div class="backup-warn small">重要：存檔存在你的瀏覽器裡。玩很久之後，記得定期按「匯出全部」備份。</div>
-    <p class="muted">這是 Ultimate V18.5 Bubble 美化修正版。存檔只存在你的瀏覽器裡，可開不同團、不同戀愛線。</p>
+    <p class="muted">這是 Ultimate V22 Idol Life Expansion 實裝版。存檔只存在你的瀏覽器裡，可開不同團、不同戀愛線。</p>
     <div class="install-tip small">
       iPhone 使用方式：把 ZIP 放到 GitHub Pages / Netlify / 本機伺服器後，用 Safari 開啟網址 → 分享 → 加入主畫面。<br>
       單檔 HTML 可直接玩；完整 PWA 功能請使用 ZIP 專案部署。
@@ -475,7 +658,43 @@ button{
         </div>
       </div>
       <div style="grid-column:1/-1">
-        <label>我的人物簡介，1000字內</label>
+        
+      <div id="idolExtra" class="idol-extra hidden">
+        <h3>愛豆同行專屬設定</h3>
+        <div class="idol-grid">
+          <div><label>我的團名</label><input id="myGroupName" placeholder="例如 AURORA / LUMINA / 隨機"></div>
+          <div><label>我的公司</label><select id="myCompany"><option>SM Entertainment</option><option>HYBE</option><option>JYP Entertainment</option><option>YG Entertainment</option><option>STARSHIP Entertainment</option><option>PLEDIS Entertainment</option><option>自創公司</option></select></div>
+          <div><label>團體類型</label><select id="myGroupType"><option>女團</option><option>男團</option><option>男女混團</option><option>Solo但有團隊</option></select></div>
+          <div><label>團體人數</label><select id="myGroupSize"><option>4</option><option>5</option><option selected>7</option><option>9</option><option>12</option></select></div>
+          <div><label>出道狀態</label><select id="myDebutStatus"><option>練習生</option><option>剛出道</option><option selected>出道3年</option><option>出道5年</option><option>大勢團</option><option>世界巡演中</option></select></div>
+          <div><label>團體氣氛</label><select id="myGroupVibe"><option>全員家人組</option><option>歡樂喜劇組</option><option>相愛相殺組</option><option>表面塑料組</option><option>吵吵鬧鬧組</option><option>超級事業腦組</option></select></div>
+        </div>
+        <h3>我的擔當，可複選</h3>
+        <div class="role-grid" id="idolRolesBox">
+          <label class="role-chip"><input type="checkbox" value="隊長">隊長</label>
+          <label class="role-chip"><input type="checkbox" value="Center">Center</label>
+          <label class="role-chip"><input type="checkbox" value="門面">門面</label>
+          <label class="role-chip"><input type="checkbox" value="主唱">主唱</label>
+          <label class="role-chip"><input type="checkbox" value="領唱">領唱</label>
+          <label class="role-chip"><input type="checkbox" value="主舞">主舞</label>
+          <label class="role-chip"><input type="checkbox" value="領舞">領舞</label>
+          <label class="role-chip"><input type="checkbox" value="主Rapper">主Rapper</label>
+          <label class="role-chip"><input type="checkbox" value="ACE">ACE</label>
+          <label class="role-chip"><input type="checkbox" value="創作Line">創作Line</label>
+          <label class="role-chip"><input type="checkbox" value="綜藝擔當">綜藝擔當</label>
+          <label class="role-chip"><input type="checkbox" value="團寵">團寵</label>
+          <label class="role-chip"><input type="checkbox" value="忙內">忙內</label>
+        </div>
+        <h3>戀愛限制</h3>
+        <div class="role-grid">
+          <label class="role-chip"><input type="checkbox" id="allowInGroupLove">允許團內戀愛</label>
+          <label class="role-chip"><input type="checkbox" id="allowSameCompanyLove" checked>允許同公司戀愛</label>
+          <label class="role-chip"><input type="checkbox" id="allowIdolRumor" checked>允許愛豆戀愛傳聞</label>
+          <label class="role-chip"><input type="checkbox" id="strictCompany">公司超嚴格</label>
+        </div>
+      </div>
+
+      <label>我的人物簡介，1000字內</label>
         <textarea id="playerBio" maxlength="1000" placeholder="你的年齡階段、個性、職業、外貌氣質、過去經歷、與TA的關係補充……"></textarea>
       </div>
       <div style="grid-column:1/-1">
@@ -550,6 +769,8 @@ button{
         <button class="secondary" onclick="tab('universeTab',this)">宇宙</button>
         <button class="secondary" onclick="tab('companyTab',this)">公司</button>
         <button class="secondary" onclick="tab('personalityTab',this)">人格</button>
+        <button class="secondary" onclick="tab('idolTab',this)">愛豆</button>
+        <button class="secondary" onclick="tab('blackboxTab',this)">黑箱</button>
         <button class="secondary" onclick="tab('aiTab',this);renderAIPrompt()">AI</button>
       </div>
       <div id="storyTab"><h2>劇情正文</h2><div id="story" class="story"></div><div id="choices" class="choice"></div></div>
@@ -638,6 +859,17 @@ button{
             <button class="secondary" onclick="triggerPhoneUniverse('calendar')">新增行事曆</button>
             <button class="secondary" onclick="triggerPhoneUniverse('dispatch')">Dispatch 案件夾</button>
             <button class="secondary" onclick="triggerPhoneUniverse('memory')">戀愛紀念冊</button>
+            <button class="big-phone-button" onclick="dreamBubblePush()">💜 手機推送事件</button>
+            <button class="secondary" onclick="triggerDreamLife('home')">同居日常</button>
+            <button class="secondary" onclick="triggerDreamLife('album')">多年回憶相簿</button>
+            <button class="secondary" onclick="triggerDreamLife('sns')">SNS連鎖反應</button>
+            <button class="big-phone-button" onclick="phoneOSGenerate('message')">💬 訊息列表</button>
+            <button class="secondary" onclick="phoneOSGenerate('unread')">💜 未讀訊息</button>
+            <button class="secondary" onclick="phoneOSGenerate('call')">📞 來電</button>
+            <button class="secondary" onclick="phoneOSGenerate('sns')">📸 SNS</button>
+            <button class="secondary" onclick="phoneOSGenerate('spotify')">🎵 Spotify</button>
+            <button class="secondary" onclick="phoneOSGenerate('album')">📷 相簿</button>
+            <button class="secondary" onclick="phoneOSGenerate('dispatch')">📰 Dispatch</button>
           </div>
         </div>
         <div id="phoneView"></div>
@@ -733,6 +965,50 @@ button{
         </div>
         <div id="personalityPanel"></div>
       </div>
+      <div id="idolTab" class="hidden"><h2>愛豆人生系統</h2>
+        <div class="card" style="background:#fff">
+          <h3>愛豆事件操作</h3>
+          <div class="blackbox-grid">
+            <button class="secondary" onclick="idolLifeAction('dorm')">宿舍日常</button>
+            <button class="secondary" onclick="idolLifeAction('practice')">練習室事件</button>
+            <button class="secondary" onclick="idolLifeAction('musicshow')">打歌待機室</button>
+            <button class="secondary" onclick="idolLifeAction('groupchat')">團體聊天室</button>
+            <button class="secondary" onclick="idolLifeAction('memberRumor')">隊友八卦</button>
+            <button class="secondary" onclick="idolLifeAction('fancam')">站姐神圖</button>
+            <button class="secondary" onclick="idolLifeAction('award')">年末舞台</button>
+            <button class="secondary" onclick="idolLifeAction('conflict')">團體危機</button>
+          </div>
+        </div>
+        <h3>我的團體</h3><div id="myIdolProfile"></div>
+        <h3>隊友列表</h3><div id="myMembersPanel"></div>
+        <h3>團體聊天室</h3><div id="idolGroupChat"></div>
+        <h3>愛豆人生事件簿</h3><div id="idolEventsPanel"></div>
+      </div>
+      <div id="blackboxTab" class="hidden"><h2>黑箱操作與圈內情報</h2>
+        <div class="card" style="background:#fff">
+          <h3>存檔 / 倒帶 / 分支</h3>
+          <div class="blackbox-grid">
+            <button class="secondary" onclick="saveSnapshot('手動快照')">建立回合快照</button>
+            <button class="secondary" onclick="renderSnapshots()">刷新快照</button>
+            <button class="secondary" onclick="rewindSnapshot()">倒帶到最近快照</button>
+            <button class="secondary" onclick="branchCurrentSave()">目前狀態分支另存</button>
+          </div>
+        </div>
+        <div id="snapshotPanel"></div>
+        <div class="card" style="background:#fff">
+          <h3>D社 / 情報 / 偷訂Bubble</h3>
+          <div class="blackbox-grid">
+            <button class="secondary" onclick="blackboxAction('buyDispatch')">D社照片買斷談判</button>
+            <button class="secondary" onclick="blackboxAction('leakCheck')">檢查偷拍庫</button>
+            <button class="secondary" onclick="blackboxAction('subBubble')">偷偷訂閱別人Bubble</button>
+            <button class="secondary" onclick="blackboxAction('gossip')">刷新圈內八卦</button>
+          </div>
+          <p class="small muted">所有八卦與傳聞皆為平行世界虛構設定，不代表任何現實人物真實私生活。</p>
+        </div>
+        <h3>偷偷訂閱的 Bubble</h3><div id="secretBubbleSubs"></div>
+        <h3>圈內八卦情報</h3><div id="gossipPanel"></div>
+        <h3>D社交易紀錄</h3><div id="dispatchDeals"></div>
+      </div>
       <div id="aiTab" class="hidden"><h2>AI 續寫核心</h2>
         <div class="warnbox small">AI 模式會把「狀態欄、重要記憶、NPC、時間線、粉圈」整理成提示包送出。若沒有 API key，會自動使用本機劇情引擎。</div>
         <div class="btns">
@@ -758,6 +1034,7 @@ button{
 </div>
 
 
+<div id="pushToast" class="push-toast"></div>
 <div class="bottomnav">
   <div class="bottomnav-inner">
     <button onclick="tab('storyTab',this)">劇情</button>

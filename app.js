@@ -1,6 +1,6 @@
 const rand=a=>a[Math.floor(Math.random()*a.length)];
 const clamp=n=>Math.max(0,Math.min(100,Math.round(n)));
-const APP_VERSION="Ultimate V18.5";
+const APP_VERSION="Ultimate V22";
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
 const KDB={
@@ -166,6 +166,116 @@ function makeNpcPersonality(name,type){
  };
 }
 
+
+function updateIdolExtraVisibility(){
+ const box=document.getElementById("idolExtra");
+ if(!box)return;
+ const checked=[...document.querySelectorAll("#ids input:checked")].map(x=>x.value);
+ box.classList.toggle("hidden", !checked.includes("愛豆同行"));
+}
+setTimeout(()=>{
+ document.querySelectorAll("#ids input").forEach(x=>x.addEventListener("change",updateIdolExtraVisibility));
+ updateIdolExtraVisibility();
+},0);
+
+
+function makeMyIdolMembers(setup){
+ if(!setup)return [];
+ const names=["夏允","娜璉","知珉","瑞雅","恩彩","潤序","海琳","詩溫","采律","多恩","允河","Lia","Rina","Sera"];
+ const roles=["隊長","主唱","主舞","Rapper","門面","忙內","綜藝擔當","創作Line","ACE"];
+ const mbtis=["ENFP","INFP","ISFJ","ENTP","INFJ","ESFJ","ISTP","ENFJ"];
+ const traits=["操心怪","超吵","安靜但毒舌","反應很快","愛撒嬌","事業腦","怕生","綜藝瘋子","練習室住民"];
+ const looks=["清冷貓相","甜妹感","高冷模特臉","運動系","小狗相","酷妹感","鄰家感","舞台妖精"];
+ const count=Math.max(1,(setup.size||5)-1);
+ const used=[];
+ return Array.from({length:count},(_,i)=>{
+  let name=names[i%names.length]; if(used.includes(name)) name+=String(i+1); used.push(name);
+  return {id:uid(),name,age:rand([18,19,20,21,22,23,24,25,26]),role:roles[i%roles.length],mbti:rand(mbtis),trait:rand(traits),look:rand(looks),popularity:rand([35,48,55,62,70,82]),bond:rand([20,35,45,58,70]),stance:"隊友",secret:"未發現"};
+ });
+}
+function addIdolChat(speaker,text,type="group"){
+ const s=current.state;
+ s.idolGroupChat.unshift({id:uid(),year:s.year,month:s.month,speaker,text,type});
+ s.idolGroupChat=s.idolGroupChat.slice(0,100);
+ addPhoneThread(`${s.myIdolSetup?.groupName||"團體"} 宿舍群`,`${speaker}：${text}`,"group",1);
+}
+function addIdolEvent(title,desc,type="idol",impact=5){
+ const s=current.state;
+ s.idolEvents.unshift({id:uid(),year:s.year,month:s.month,round:s.round,title,desc,type,impact});
+ s.idolEvents=s.idolEvents.slice(0,100);
+ addUniverseLog(title,desc,type);
+}
+function idolLifeAction(type){
+ if(!current)return;
+ const s=current.state;
+ if(!s.myIdolSetup)return alert("這個存檔沒有選擇愛豆同行，無法使用愛豆人生系統。");
+ let story="", member=rand(s.myMembers||[{name:"隊友",role:"隊友"}]);
+ if(type==="dorm"){
+  const ev=rand([["宵夜事件",`${member.name} 把你的優格吃掉，還在宿舍群裝不知道。`],["深夜談心",`${member.name} 坐在客廳地板上問你：「你最近是不是有事瞞著我們？」`],["客廳燈",`凌晨三點宿舍客廳還亮著，大家都說要睡，結果沒有人真的睡。`]]);
+  addIdolChat(member.name, ev[1]);
+  addIdolEvent(ev[0],ev[1],"宿舍",6);
+  story=`【愛豆人生｜宿舍日常】\n\n${ev[1]}\n\n宿舍不是安全屋，是所有秘密最容易露出尾巴的地方。`;
+ }
+ if(type==="practice"){
+  const ev=`練習室鏡子前，你和 ${member.name} 因為一個走位吵了三分鐘，最後又一起笑場。`;
+  s.pressure=clamp(s.pressure+5); member.bond=clamp((member.bond||0)+4);
+  addIdolEvent("練習室事件",ev,"練習室",5);
+  story=`【愛豆人生｜練習室】\n\n${ev}\n\n青春感不是不累，是累到快崩潰還能因為一句話笑出來。`;
+ }
+ if(type==="musicshow"){
+  const ev=`打歌待機室裡，${member.name} 幫你擋住了突然掃過來的工作人員鏡頭。`;
+  s.risk=clamp(s.risk-2); member.bond=clamp((member.bond||0)+6);
+  addIdolEvent("打歌待機室",ev,"打歌",7);
+  story=`【愛豆人生｜打歌待機室】\n\n${ev}\n\n隊友不一定知道全部，但有些人會先替你擋一下。`;
+ }
+ if(type==="groupchat"){
+  const lines=[["隊長","明天七點集合。"],[member.name,"不可能。"],["你","我支持不可能。"],["忙內","ㅋㅋㅋㅋㅋㅋ"],["經紀人","我看得到。"]];
+  lines.forEach(l=>addIdolChat(l[0],l[1]));
+  addIdolEvent("團體聊天室",`${s.myIdolSetup.groupName} 宿舍群又吵起來了。`,"群聊",4);
+  story=`【愛豆人生｜團體聊天室】\n\n隊長：明天七點集合。\n${member.name}：不可能。\n你：我支持不可能。\n經紀人：我看得到。\n\n宿舍群安靜了三秒。`;
+ }
+ if(type==="memberRumor"){
+  const ev=`你發現 ${member.name} 最近回訊息很慢，Bubble卻更新得很勤。隊友們開始互看。`;
+  member.secret="疑似戀愛或有私人行程"; s.fandomHeat=clamp((s.fandomHeat||0)+4);
+  addGossipIntel("隊友觀察",`${member.name} 最近有點怪`,ev,55,20);
+  addIdolEvent("隊友八卦",ev,"八卦",8);
+  story=`【愛豆人生｜隊友八卦】\n\n${ev}\n\n原來不是只有你的秘密會在團體裡長出影子。`;
+ }
+ if(type==="fancam"){
+  const ev=`你的直拍突然出圈，粉絲開始說你今天眼神像有故事。`;
+  s.buzz=clamp(s.buzz+12); s.fandomHeat=clamp((s.fandomHeat||0)+8);
+  addPhoneSNS("X","@fancam_daily",`${s.myIdolSetup.groupName} ${s.myIdolSetup.roles?.[0]||"成員"} 今日直拍出圈`,18);
+  addIdolEvent("站姐神圖",ev,"粉圈",10);
+  story=`【愛豆人生｜站姐神圖】\n\n${ev}\n\n站姐拍到的是舞台，但粉絲開始解讀的是你沒有說出口的心情。`;
+ }
+ if(type==="award"){
+  const ev=`年末舞台彩排到凌晨，${member.name} 靠在牆邊說：「我們真的變成前輩了欸。」`;
+  s.pressure=clamp(s.pressure+8); s.heart=clamp(s.heart+3);
+  addIdolEvent("年末舞台",ev,"年末",9);
+  story=`【愛豆人生｜年末舞台】\n\n${ev}\n\n時間不是用年份算的，是用每一次彩排後的凌晨算的。`;
+ }
+ if(type==="conflict"){
+  const ev=`隊內氣氛變得很微妙。有人覺得公司資源分配不公平，有人覺得大家都太累。`;
+  s.pressure=clamp(s.pressure+14); (s.myMembers||[]).forEach(m=>m.bond=clamp((m.bond||0)-rand([1,2,4])));
+  addIdolEvent("團體危機",ev,"危機",15);
+  story=`【愛豆人生｜團體危機】\n\n${ev}\n\n團體不是永遠整齊的隊形，有時候每個人都在用自己的方式撐著。`;
+ }
+ s.round++; updateWorldClock("hour"); s.lifeStage=lifeStage(); current.storyLog.push(story); saveCurrent(); renderAll(story);
+}
+function renderIdolLife(){
+ if(!current)return;
+ const s=current.state;
+ const setup=s.myIdolSetup;
+ const profile=document.getElementById("myIdolProfile");
+ if(profile)profile.innerHTML=setup?`<div class="member-card"><b>${setup.groupName}</b><div>${setup.company}｜${setup.type}｜${setup.size}人｜${setup.debutStatus}</div><div class="member-tags">${(setup.roles||[]).map(r=>`<span>${r}</span>`).join("")}<span>${setup.vibe}</span></div><div class="small">戀愛限制：團內${setup.romanceRules?.inGroup?"允許":"禁止"}｜同公司${setup.romanceRules?.sameCompany?"允許":"禁止"}｜公司嚴格${setup.romanceRules?.strictCompany?"是":"否"}</div></div>`:"<p class='muted'>此存檔未選愛豆同行。</p>";
+ const members=document.getElementById("myMembersPanel");
+ if(members)members.innerHTML=(s.myMembers||[]).map(m=>`<div class="member-card"><b>${m.name}</b><div>${m.age}歲｜${m.role}｜${m.mbti}</div><div>${m.look}，${m.trait}</div><div class="member-tags"><span>人氣 ${m.popularity}</span><span>關係 ${m.bond}</span><span>${m.secret}</span></div></div>`).join("")||"<p class='muted'>尚無隊友資料。</p>";
+ const chat=document.getElementById("idolGroupChat");
+ if(chat)chat.innerHTML=(s.idolGroupChat||[]).slice(0,20).map(c=>`<div class="dorm-chat"><span class="speaker">${c.speaker}</span>：${c.text}<div class="small">${c.year}年${c.month}月</div></div>`).join("")||"<p class='muted'>尚無團體聊天。</p>";
+ const ev=document.getElementById("idolEventsPanel");
+ if(ev)ev.innerHTML=(s.idolEvents||[]).map(e=>`<div class="idol-event"><b>${e.title}</b><div>${e.desc}</div><span class="tag">${e.type}</span><span class="tag">影響 ${e.impact}</span></div>`).join("")||"<p class='muted'>尚無愛豆事件。</p>";
+}
+
 function startNewGame(){
  const target=document.getElementById("target").value.trim()||"隨機原創";
  const group=detectGroup(target)||"原創團體";
@@ -185,7 +295,7 @@ function startNewGame(){
  current={
   id:uid(),version:APP_VERSION,title:document.getElementById("saveTitle").value.trim()||`${ta}線`,
   createdAt:new Date().toISOString(),updatedAt:new Date().toISOString(),
-  state:{round:1,year:2026,month:4,week:1,season:"回歸期",lifeStage:"秘密人生開始",role,ta,group,company:data.company,fandom:data.fandom,relation:rel,scene:document.getElementById("scene").value,call:document.getElementById("callName").value||"你",playerBio:document.getElementById("playerBio").value,extraNote:document.getElementById("extraNote").value,mode:document.getElementById("mode").value,aiStyle:document.getElementById("aiStyle")?document.getElementById("aiStyle").value:"realistic",matureLevel:document.getElementById("matureLevel").value,adultConfirmed:document.getElementById("adultConfirm").checked,familyMode:document.getElementById("familyMode").value,heart:st[0],trust:st[1],risk:st[2],pressure:st[3],possess:st[4],buzz:st[5],intimacy:st[6],stayRisk:0,marriage:0,familyRisk:0,cohabitation:0,publicStatus:"未公開",marriageStatus:"未婚",familyStatus:"未開啟",careerStage:"現役活動中",retirementStage:"未退休",debutYear:2023,careerYear:3,contractStatus:"首約進行中",lifeChapters:[],lifeMilestones:[],futurePaths:[],lifeEvents:[],phoneMessages:[],notifications:[],kakaoChats:[],bubblePosts:[],xTimeline:[],instagramStories:[],callLogs:[],calendarEvents:[],album:[],dispatchCases:[],loveArchive:[],items:[],worldEvents:[],universeLog:[],industryRelations:makeIndustryRelations(group,data),mainPersonality:makePersonality(ta),emotionalShadows:[],relationshipWounds:[],companyState:makeCompanyState(data.company),worldClock:{year:2026,month:4,day:1,hour:10,period:"上午"},autoWorld:false,autoEvents:[],npcAutonomyLog:[],fandomHeat:st[5],searchRank:0,proofLevel:0,companyStatement:"尚未回應",fandomSplit:0,knetzMood:35,ifansMood:62,dispatchFocus:0,xHeat:0,trendWashPower:0,photoVault:[],xAccounts:makeXAccounts(group,ta),watchers:makeWatchers(group),npcs},
+  state:{round:1,year:2026,month:4,week:1,season:"回歸期",lifeStage:"秘密人生開始",role,ta,group,company:data.company,fandom:data.fandom,relation:rel,scene:document.getElementById("scene").value,call:document.getElementById("callName").value||"你",playerBio:document.getElementById("playerBio").value,extraNote:document.getElementById("extraNote").value,mode:document.getElementById("mode").value,aiStyle:document.getElementById("aiStyle")?document.getElementById("aiStyle").value:"realistic",matureLevel:document.getElementById("matureLevel").value,adultConfirmed:document.getElementById("adultConfirm").checked,familyMode:document.getElementById("familyMode").value,heart:st[0],trust:st[1],risk:st[2],pressure:st[3],possess:st[4],buzz:st[5],intimacy:st[6],stayRisk:0,marriage:0,familyRisk:0,cohabitation:0,publicStatus:"未公開",marriageStatus:"未婚",familyStatus:"未開啟",careerStage:"現役活動中",retirementStage:"未退休",debutYear:2023,careerYear:3,contractStatus:"首約進行中",lifeChapters:[],lifeMilestones:[],futurePaths:[],lifeEvents:[],phoneMessages:[],notifications:[],kakaoChats:[],bubblePosts:[],xTimeline:[],instagramStories:[],callLogs:[],calendarEvents:[],album:[],dispatchCases:[],loveArchive:[],dreamInbox:[],snsUniverse:[],cohabLife:[],memoryAlbum:[],pushEvents:[],phoneThreads:[],phoneUnread:[],phoneCalls:[],phoneSNS:[],spotifyHistory:[],phoneAlbum:[],phoneDispatch:[],myIdolSetup:myIdolSetup,myMembers:makeMyIdolMembers(myIdolSetup),idolGroupChat:[],idolEvents:[],snapshots:[],secretBubbleSubs:[],gossipIntel:[],dispatchDeals:[],items:[],worldEvents:[],universeLog:[],industryRelations:makeIndustryRelations(group,data),mainPersonality:makePersonality(ta),emotionalShadows:[],relationshipWounds:[],companyState:makeCompanyState(data.company),worldClock:{year:2026,month:4,day:1,hour:10,period:"上午"},autoWorld:false,autoEvents:[],npcAutonomyLog:[],fandomHeat:st[5],searchRank:0,proofLevel:0,companyStatement:"尚未回應",fandomSplit:0,knetzMood:35,ifansMood:62,dispatchFocus:0,xHeat:0,trendWashPower:0,photoVault:[],xAccounts:makeXAccounts(group,ta),watchers:makeWatchers(group),npcs},
   memories:[],memoryClusters:[],recallHooks:[],timeline:[],sns:[],groupChats:[],storyLog:[]
  };
  addTimeline("遊戲開始",`${current.state.year}年${current.state.month}月，你以「${role}」身份進入 ${ta} 的平行世界人生線。`,"高");
@@ -268,6 +378,7 @@ async function choose(k,txt){
  const d={A:[-1,4,-3,2,0,0,-1],B:[1,1,-1,0,0,0,1],C:[4,0,5,0,3,2,3],D:[-2,-2,-4,1,0,0,-2],E:[2,0,3,0,1,1,2]}[k]||[0,0,0,0,0,0,0];
  s.heart=clamp(s.heart+d[0]);s.trust=clamp(s.trust+d[1]);s.risk=clamp(s.risk+d[2]);s.pressure=clamp(s.pressure+d[3]);s.possess=clamp(s.possess+d[4]);s.buzz=clamp(s.buzz+d[5]);s.intimacy=clamp(s.intimacy+d[6]);
  if(s.intimacy>45 && s.adultConfirmed)s.stayRisk=clamp(s.stayRisk+2);
+ if((current.snapshots||[]).length===0 || s.round%5===0) saveSnapshot("自動快照 回合"+s.round);
  s.round++; advanceTime(); s.lifeStage=lifeStage();
  let out="";
  document.body.classList.add("loading");
@@ -399,6 +510,24 @@ Instagram限動：${(s.instagramStories||[]).slice(0,6).map(i=>`${i.author}:${i.
 行事曆：${(s.calendarEvents||[]).slice(0,8).map(c=>`${c.date}:${c.title}/危險${c.danger}`).join("；")||"無"}
 Dispatch案件：${(s.dispatchCases||[]).slice(0,8).map(d=>`${d.title}:${d.desc}/狀態${d.status}`).join("；")||"無"}
 戀愛紀念冊：${(s.loveArchive||[]).slice(0,8).map(l=>`${l.title}:${l.desc}`).join("；")||"無"}
+Dream Inbox：${(s.dreamInbox||[]).slice(0,10).map(i=>`${i.sender}:${i.preview}/${i.type}`).join("；")||"無"}
+SNS宇宙：${(s.snsUniverse||[]).slice(0,10).map(f=>`${f.platform}-${f.author}:${f.text}`).join("；")||"無"}
+同居日常：${(s.cohabLife||[]).slice(0,8).map(h=>`${h.title}:${h.desc}`).join("；")||"無"}
+多年回憶相簿：${(s.memoryAlbum||[]).slice(0,8).map(a=>`${a.year}-${a.title}:${a.desc}`).join("；")||"無"}
+PhoneOS訊息列表：${(s.phoneThreads||[]).slice(0,10).map(t=>`${t.name}:${t.last}/未讀${t.unread}`).join("；")||"無"}
+PhoneOS未讀：${(s.phoneUnread||[]).slice(0,10).map(u=>`${u.source}:${u.text}`).join("；")||"無"}
+PhoneOS來電：${(s.phoneCalls||[]).slice(0,8).map(c=>`${c.name}:${c.type}/${c.note}`).join("；")||"無"}
+Spotify：${(s.spotifyHistory||[]).slice(0,8).map(sp=>`${sp.artist}-${sp.title}/${sp.mood}`).join("；")||"無"}
+PhoneOS相簿：${(s.phoneAlbum||[]).slice(0,8).map(a=>`${a.title}:${a.desc}`).join("；")||"無"}
+PhoneOSDispatch：${(s.phoneDispatch||[]).slice(0,8).map(d=>`${d.title}:${d.desc}/危險${d.danger}`).join("；")||"無"}
+黑箱快照數：${(current.snapshots||[]).length}
+偷偷訂閱Bubble：${(s.secretBubbleSubs||[]).map(x=>`${x.name}/${x.group}:${x.lastUpdate}`).join("；")||"無"}
+圈內八卦：${(s.gossipIntel||[]).slice(0,8).map(g=>`${g.source}-${g.title}:${g.desc}/可信${g.cred}`).join("；")||"無"}
+D社交易：${(s.dispatchDeals||[]).slice(0,6).map(d=>`${d.title}:${d.desc}/成功${d.success}`).join("；")||"無"}
+我的愛豆設定：${JSON.stringify(s.myIdolSetup||{}, null, 0)}
+我的隊友：${(s.myMembers||[]).map(m=>`${m.name}/${m.age}/${m.role}/${m.trait}/關係${m.bond}/${m.secret}`).join("；")||"無"}
+團體聊天室：${(s.idolGroupChat||[]).slice(0,10).map(c=>`${c.speaker}:${c.text}`).join("；")||"無"}
+愛豆人生事件：${(s.idolEvents||[]).slice(0,10).map(e=>`${e.title}:${e.desc}`).join("；")||"無"}
 物品伏筆：${(s.items||[]).slice(0,12).map(i=>`${i.name}：${i.desc}，風險${i.risk}，${i.used?"已回收":"未回收"}`).join("；")||"無"}
 
 【粉圈動態】
@@ -700,13 +829,256 @@ function triggerPhoneUniverse(type){
  s.round++; updateWorldClock("hour"); s.lifeStage=lifeStage(); current.storyLog.push(story); saveCurrent(); renderAll(story);
 }
 
+
+function showPushToast(title,body){
+ const el=document.getElementById("pushToast");
+ if(!el)return;
+ el.innerHTML=`<b>${title}</b><br><span>${body}</span>`;
+ el.classList.add("show");
+ setTimeout(()=>el.classList.remove("show"),3200);
+}
+function addDreamInbox(sender,preview,type="chat",unread=true){
+ const s=current.state;
+ s.dreamInbox.unshift({id:uid(),year:s.year,month:s.month,day:s.worldClock?.day||1,hour:s.worldClock?.hour||0,sender,preview,type,unread});
+ s.dreamInbox=s.dreamInbox.slice(0,80);
+}
+function addSNSUniverse(platform,author,text,impact=10){
+ const s=current.state;
+ s.snsUniverse.unshift({id:uid(),year:s.year,month:s.month,platform,author,text,impact});
+ s.snsUniverse=s.snsUniverse.slice(0,100);
+ if(platform==="X")s.xHeat=clamp((s.xHeat||0)+Math.ceil(impact/3));
+ if(platform==="Bubble")s.fandomHeat=clamp((s.fandomHeat||0)+Math.ceil(impact/3));
+}
+function addCohabLife(title,desc,warmth=10,risk=3){
+ const s=current.state;
+ s.cohabLife.unshift({id:uid(),year:s.year,month:s.month,title,desc,warmth,risk});
+ s.cohabLife=s.cohabLife.slice(0,80);
+ s.intimacy=clamp((s.intimacy||0)+Math.ceil(warmth/3));
+ s.risk=clamp((s.risk||0)+Math.ceil(risk/3));
+}
+function addMemoryAlbum(title,desc,year=None){
+ const s=current.state;
+ s.memoryAlbum.unshift({id:uid(),year:year||s.year,month:s.month,title,desc});
+ s.memoryAlbum=s.memoryAlbum.slice(0,80);
+ addMemory("多年回憶相簿",`${title}：${desc}`,"中",["相簿","長期人生"]);
+}
+function dreamBubblePush(){
+ if(!current)return;
+ const s=current.state;
+ const pool=[
+  ["KakaoTalk",`${s.ta}：睡了嗎？`,"chat"],
+  ["Bubble",`${s.ta} 更新：今天也辛苦了。`,"bubble"],
+  ["未接來電",`${s.ta} 來電 2 通`,"call"],
+  ["X 熱搜",`#${String(s.group).replace(/\s/g,"")} #Bubble 暗號 上升中`,"x"],
+  ["Instagram",`${s.ta} 發了限動：🌙`,"ig"],
+  ["行事曆提醒",`明天：${s.group} 預錄 / 動線重疊風險`,"calendar"]
+ ];
+ const p=rand(pool);
+ addDreamInbox(p[0],p[1],p[2],true);
+ addNotification(p[0],p[1],p[2]);
+ if(p[2]==="chat")addKakao(s.ta,"睡了嗎？","未讀");
+ if(p[2]==="bubble")addBubblePost("今天也辛苦了。",true);
+ if(p[2]==="call")addCall(s.ta,"未接來電 2 通");
+ if(p[2]==="x")addXPost("@kpopissue_now",`#${s.group} #Bubble 暗號 上升中`,18);
+ if(p[2]==="ig")addIGStory(s.ta,"🌙","粉絲開始猜是不是暗號",10);
+ showPushToast(p[0],p[1]);
+ s.round++; updateWorldClock("hour"); s.lifeStage=lifeStage();
+ const story=`【Dream Bubble｜手機推送】\n\n${p[0]} 跳出通知：\n${p[1]}\n\n你還沒有做出選擇，世界已經先敲了敲你的螢幕。`;
+ current.storyLog.push(story); saveCurrent(); renderAll(story);
+}
+function triggerDreamLife(type){
+ if(!current)return;
+ const s=current.state;
+ let story="";
+ if(type==="home"){
+  const item=rand([
+   ["玄關燈",`${s.ta} 比你早回來，玄關留了一盞燈。鞋櫃裡多了一雙不該被外人看見的拖鞋。`],
+   ["冰箱便利貼",`冰箱上貼著一張便利貼：「我凌晨回來，別等。」字很醜，但你看了很久。`],
+   ["沙發毯",`沙發上的毯子還有TA身上的香水味。你忽然意識到，同居不是事件，是日常反覆留下證據。`],
+   ["備用牙刷",`洗手台旁邊多了一支備用牙刷。很小，很危險，也很像生活。`]
+  ]);
+  addCohabLife(item[0],item[1],12,5);
+  addDreamInbox("家",item[1],"home",false);
+  story=`【Dream Bubble｜同居日常】\n\n${item[1]}\n\n戀愛不是只有舞台後台和深夜訊息，也有這些藏不住的生活痕跡。`;
+ }
+ if(type==="album"){
+  const item=rand([
+   ["第一次一起看的夜景","照片沒有拍到臉，只拍到窗戶倒影裡靠得很近的兩個影子。"],
+   ["退場後的手腕","照片模糊到幾乎不能用，卻記下了TA在人群散開前短暫抓住你的手腕。"],
+   ["多年後的同一條街","你們隔了很多年又走過那條街，這次不用分開走。"],
+   ["沒有公開的生日蛋糕","蛋糕上沒有名字，只有一顆紫色愛心。"]
+  ]);
+  addMemoryAlbum(item[0],item[1]);
+  addLoveArchive(item[0],item[1],"多年相簿");
+  story=`【Dream Bubble｜多年回憶相簿】\n\n${item[0]}\n\n${item[1]}\n\n這些照片不一定能公開，但它們會替你們記得。`;
+ }
+ if(type==="sns"){
+  const chain=rand([
+   ["Bubble","粉絲A","他今天那句『不要淋雨』也太像對某個人說的吧。"],
+   ["X","搬運帳","同款雨傘 + 同天行程空白，先存。"],
+   ["Instagram","路人","這張限動背景是不是某飯店？"],
+   ["Weverse","理智粉","拜託不要什麼都戀愛腦解讀。"]
+  ]);
+  addSNSUniverse(chain[0],chain[1],chain[2],18);
+  addDreamInbox(chain[0],`${chain[1]}：${chain[2]}`,"sns",true);
+  story=`【Dream Bubble｜SNS連鎖反應】\n\n${chain[0]} 上出現新的動態。\n\n${chain[1]}：${chain[2]}\n\n一句話不一定能引爆什麼，但它會變成下一個人截圖的理由。`;
+ }
+ s.round++; updateWorldClock("hour"); s.lifeStage=lifeStage(); current.storyLog.push(story); saveCurrent(); renderAll(story);
+}
+
+
+function addPhoneThread(name,last,type="chat",unread=0){
+ const s=current.state;
+ let t=(s.phoneThreads||[]).find(x=>x.name===name && x.type===type);
+ if(!t){t={id:uid(),name,type,last:"",unread:0,updatedAt:""};s.phoneThreads.unshift(t);}
+ t.last=last;t.unread=clamp((t.unread||0)+unread,0,99);t.updatedAt=`${s.year}.${s.month}.${s.worldClock?.day||1} ${String(s.worldClock?.hour||0).padStart(2,"0")}:00`;
+ s.phoneThreads=s.phoneThreads.slice(0,80);
+}
+function addPhoneUnread(source,text,level=1){
+ const s=current.state;
+ s.phoneUnread.unshift({id:uid(),year:s.year,month:s.month,source,text,level});
+ s.phoneUnread=s.phoneUnread.slice(0,80);
+ addDreamInbox(source,text,"unread",true);
+}
+function addPhoneCall(name,type="未接來電",note=""){
+ const s=current.state;
+ s.phoneCalls.unshift({id:uid(),year:s.year,month:s.month,day:s.worldClock?.day||1,hour:s.worldClock?.hour||0,name,type,note});
+ s.phoneCalls=s.phoneCalls.slice(0,80);
+ addCall(name,type);
+}
+function addPhoneSNS(platform,author,text,heat=10){
+ const s=current.state;
+ s.phoneSNS.unshift({id:uid(),year:s.year,month:s.month,platform,author,text,heat});
+ s.phoneSNS=s.phoneSNS.slice(0,100);
+ addSNSUniverse(platform,author,text,heat);
+}
+function addSpotifyTrack(title,artist,mood="深夜"){
+ const s=current.state;
+ s.spotifyHistory.unshift({id:uid(),year:s.year,month:s.month,title,artist,mood});
+ s.spotifyHistory=s.spotifyHistory.slice(0,80);
+ addMemory("Spotify播放紀錄",`${artist} - ${title}｜${mood}`,"低",["手機","Spotify"]);
+}
+function addPhoneAlbum(title,desc,tag="私人"){
+ const s=current.state;
+ s.phoneAlbum.unshift({id:uid(),year:s.year,month:s.month,title,desc,tag});
+ s.phoneAlbum=s.phoneAlbum.slice(0,100);
+ addAlbum(title,desc,8,true);
+}
+function addPhoneDispatch(title,desc,danger=20,status="追蹤中"){
+ const s=current.state;
+ s.phoneDispatch.unshift({id:uid(),year:s.year,month:s.month,title,desc,danger,status});
+ s.phoneDispatch=s.phoneDispatch.slice(0,80);
+ addDispatchCase(title,desc,status,danger);
+}
+function phoneOSGenerate(type){
+ if(!current)return;
+ const s=current.state;
+ let story="";
+ if(type==="message"){
+  const pool=[
+   [s.ta,"剛剛想起你。","chat",1],
+   ["經紀人","明天預錄動線有改，所有人注意。","work",0],
+   [rand(Object.keys(s.npcs||{})||["成員"]),"晚上聚餐嗎？","group",1],
+   ["宿舍群","誰又把客廳燈開著睡？","group",0]
+  ];
+  const p=rand(pool); addPhoneThread(p[0],p[1],p[2],p[3]); addKakao(p[0],p[1],p[3]?"未讀":"已讀");
+  story=`【Phone OS｜訊息列表】\n\n${p[0]}：${p[1]}\n\n它不是一段劇情提示，而是你手機裡新跳出的生活痕跡。`;
+ }
+ if(type==="unread"){
+  const p=rand([
+   ["💜",`${s.ta} 傳來一則未讀訊息。`],
+   ["Bubble",`${s.ta} 發了只有你看得懂的句子。`],
+   ["工作群","新行程通知：後台動線更改。"],
+   ["X",`有人開始整理 ${s.ta} 的時間線。`]
+  ]);
+  addPhoneUnread(p[0],p[1],rand([1,2,3])); showPushToast(p[0],p[1]);
+  story=`【Phone OS｜未讀訊息】\n\n${p[0]}：${p[1]}\n\n你可以不點開，但未讀會一直待在那裡。`;
+ }
+ if(type==="call"){
+  const p=rand([[s.ta,"未接來電","凌晨打來又掛掉"],["經紀人","來電","工作確認"],[rand(Object.keys(s.npcs||{})||["成員"]),"未接來電","像是有事想問"]]);
+  addPhoneCall(p[0],p[1],p[2]); addPhoneThread(p[0],`${p[1]}｜${p[2]}`,"call",1);
+  story=`【Phone OS｜來電】\n\n${p[0]}｜${p[1]}\n\n備註：${p[2]}\n\n手機震動停下後，房間反而更安靜。`;
+ }
+ if(type==="sns"){
+  const p=rand([
+   ["X","@kpopissue_now",`#${s.group} #Bubble 暗號 討論升溫`,18],
+   ["Instagram",s.ta,"🌙",12],
+   ["Weverse","粉絲",`今天那句話不要過度解讀啦`,8],
+   ["Bubble","粉絲聊天室","他是不是心情很好？",10]
+  ]);
+  addPhoneSNS(p[0],p[1],p[2],p[3]);
+  story=`【Phone OS｜SNS】\n\n${p[0]}｜${p[1]}：${p[2]}\n\n粉圈像一片水面，任何小東西掉進去都會有波紋。`;
+ }
+ if(type==="spotify"){
+  const p=rand([
+   ["Late Night Talking","Harry Styles","凌晨想念"],
+   ["Ditto","NewJeans","冬天回憶"],
+   ["Love wins all","IU","公開前夜"],
+   ["To. X","TAEYEON","冷戰"],
+   ["Get A Guitar","RIIZE","回到起點"]
+  ]);
+  addSpotifyTrack(p[0],p[1],p[2]);
+  story=`【Phone OS｜Spotify】\n\n最近播放：${p[1]} - ${p[0]}\n\n心情標籤：${p[2]}\n\n有時候一首歌比一句訊息更像坦白。`;
+ }
+ if(type==="album"){
+  const p=rand([
+   ["鎖定相簿","一張只拍到手和袖口的照片。","私人"],
+   ["最近刪除","你差點刪掉的那張飯店窗景。","危險"],
+   ["收藏","演唱會後台一角，燈光很暗。","回憶"],
+   ["生活","客廳桌上的兩杯水。","同居"]
+  ]);
+  addPhoneAlbum(p[0],p[1],p[2]);
+  story=`【Phone OS｜相簿】\n\n${p[0]}：${p[1]}\n\n照片不說話，但它比訊息更難否認。`;
+ }
+ if(type==="dispatch"){
+  const p=rand([
+   ["線索牆更新","機場時間線與飯店出入紀錄被放到同一個案件夾。",34,"追蹤中"],
+   ["匿名投稿","模糊背影被投稿給議題帳。",22,"待確認"],
+   ["爆料預告","D社開始預熱年末爆料。",46,"高風險"],
+   ["公司公關監控","公司開始追蹤某個搬運帳。",28,"內部處理"]
+  ]);
+  addPhoneDispatch(p[0],p[1],p[2],p[3]);
+  story=`【Phone OS｜Dispatch】\n\n${p[0]}\n\n${p[1]}\n\n狀態：${p[3]}\n\n最可怕的不是爆出來，而是不知道它什麼時候爆。`;
+ }
+ s.round++; updateWorldClock("hour"); s.lifeStage=lifeStage(); current.storyLog.push(story); saveCurrent(); renderAll(story);
+}
+
 function renderPhone(){
  const el=document.getElementById("phoneView"); if(!el||!current)return;
  const s=current.state;
  const msgs=s.phoneMessages||[], notifs=s.notifications||[];
  const kakao=s.kakaoChats||[], bubbles=s.bubblePosts||[], x=s.xTimeline||[], ig=s.instagramStories||[], calls=s.callLogs||[], cal=s.calendarEvents||[], album=s.album||[], dc=s.dispatchCases||[], love=s.loveArchive||[];
  el.innerHTML=`<div class="phone"><div class="phone-screen">
- <h3>手機桌面</h3>
+ <div class="phone-os-shell">
+ <div class="phone-statusbar"><span>8:20</span><span>💜 Phone OS</span><span>100%</span></div>
+ <div class="phone-mode-switch">
+  <button class="secondary" onclick="phoneOSGenerate('message')">訊息</button>
+  <button class="secondary" onclick="phoneOSGenerate('unread')">未讀</button>
+  <button class="secondary" onclick="phoneOSGenerate('call')">來電</button>
+  <button class="secondary" onclick="phoneOSGenerate('sns')">SNS</button>
+  <button class="secondary" onclick="phoneOSGenerate('spotify')">Spotify</button>
+  <button class="secondary" onclick="phoneOSGenerate('album')">相簿</button>
+  <button class="secondary" onclick="phoneOSGenerate('dispatch')">Dispatch</button>
+ </div>
+ <div class="phone-os-grid">
+  <div class="phone-os-app primary"><span class="emoji">💬</span>訊息</div>
+  <div class="phone-os-app"><span class="emoji">💜</span>未讀</div>
+  <div class="phone-os-app"><span class="emoji">📞</span>來電</div>
+  <div class="phone-os-app"><span class="emoji">📸</span>SNS</div>
+  <div class="phone-os-app"><span class="emoji">🎵</span>Spotify</div>
+  <div class="phone-os-app"><span class="emoji">📷</span>相簿</div>
+  <div class="phone-os-app"><span class="emoji">📰</span>Dispatch</div>
+  <div class="phone-os-app"><span class="emoji">⚙️</span>設定</div>
+ </div>
+ <div class="phone-os-section"><div class="phone-os-title"><h3>訊息列表</h3><span class="badge">${(s.phoneThreads||[]).reduce((a,b)=>a+(b.unread||0),0)}</span></div>${(s.phoneThreads||[]).slice(0,7).map(t=>`<div class="message-thread"><div class="thread-avatar">${t.type==="call"?"📞":t.type==="work"?"📋":t.type==="group"?"👥":"💜"}</div><div class="thread-body"><b>${t.name}</b><span>${t.last}</span></div><div class="thread-meta">${t.updatedAt||""}${t.unread?`<br><span class="badge">${t.unread}</span>`:""}</div></div>`).join("")||"<p class='muted'>尚無訊息列表。</p>"}</div>
+ <div class="phone-os-section"><div class="phone-os-title"><h3>未讀訊息</h3><span class="badge">${(s.phoneUnread||[]).length}</span></div>${(s.phoneUnread||[]).slice(0,6).map(u=>`<div class="message-thread"><div class="thread-avatar">💜</div><div class="thread-body"><b>${u.source}</b><span>${u.text}</span></div><div class="thread-meta">Lv.${u.level}</div></div>`).join("")||"<p class='muted'>尚無未讀。</p>"}</div>
+ <div class="phone-os-section"><h3>來電</h3>${(s.phoneCalls||[]).slice(0,5).map(c=>`<div class="call-item"><div><b>${c.name}</b><br><span class="small">${c.note}</span></div><b>${c.type}</b></div>`).join("")||"<p class='muted'>尚無來電。</p>"}</div>
+ <div class="phone-os-section"><h3>SNS</h3><div class="sns-tabs"><span>X</span><span>Instagram</span><span>Weverse</span><span>Bubble</span><span>搬運帳</span></div>${(s.phoneSNS||[]).slice(0,5).map(f=>`<div class="feed-card"><b>${f.platform}｜${f.author}</b><div>${f.text}</div><span class="tag">熱度 ${f.heat}</span></div>`).join("")||"<p class='muted'>尚無SNS。</p>"}</div>
+ <div class="phone-os-section"><h3>Spotify</h3>${(s.spotifyHistory||[]).slice(0,5).map(sp=>`<div class="spotify-item"><div class="spotify-cover">🎵</div><div style="flex:1"><b>${sp.title}</b><br><span class="small">${sp.artist}｜${sp.mood}</span></div></div>`).join("")||"<p class='muted'>尚無播放紀錄。</p>"}</div>
+ <div class="phone-os-section"><h3>相簿</h3><div class="album-wall">${(s.phoneAlbum||[]).slice(0,9).map(a=>`<div class="album-tile">${a.title}<br>${a.tag}</div>`).join("")||"<p class='muted'>尚無相簿。</p>"}</div></div>
+ <div class="phone-os-section"><h3>Dispatch</h3>${(s.phoneDispatch||[]).slice(0,5).map(d=>`<div class="dispatch-item"><div><b>${d.title}</b><br><span class="small">${d.desc}</span></div><span class="badge">${d.danger}</span></div>`).join("")||"<p class='muted'>尚無Dispatch案件。</p>"}</div>
+ </div>
+ <h3>舊手機桌面</h3>
  <div class="phone-home">
   <div class="appicon kakao"><b>💬</b>Kakao</div>
   <div class="appicon bubble-app"><b>🫧</b>Bubble</div>
@@ -718,6 +1090,7 @@ function renderPhone(){
   <div class="appicon dispatch-app"><b>📁</b>Dispatch</div>
  </div>
 
+ <div class="phone-section"><h3>Dream Inbox</h3><div class="inbox-list">${(s.dreamInbox||[]).slice(0,8).map(i=>`<div class="inbox-row"><div class="avatar-bubble">${i.type==="chat"?"💬":i.type==="bubble"?"🫧":i.type==="call"?"☎️":i.type==="sns"?"𝕏":i.type==="home"?"🏠":"💜"}</div><div class="inbox-main"><b>${i.sender}</b><span>${i.preview}</span></div>${i.unread?`<div class="unread-dot"></div>`:""}</div>`).join("")||"<p class='muted'>尚無收件匣。</p>"}</div></div>
  <div class="phone-section"><h3>通知</h3>${notifs.slice(0,4).map(n=>`<div class="notif"><b>${n.title}</b><div>${n.body}</div><div class="small">${n.year}年${n.month}月</div></div>`).join("")||"<p class='muted'>暫無通知。</p>"}</div>
 
  <div class="phone-section"><h3>KakaoTalk</h3>${kakao.slice(-8).map(m=>`<div class="bubble-msg ${m.sender==="你"?"me":""}"><b>${m.sender}</b><br>${m.text}<div class="small">${m.status}｜${m.year}.${m.month}.${m.day} ${String(m.hour).padStart(2,"0")}:00</div></div>`).join("")||"<p class='muted'>尚無Kakao訊息。</p>"}</div>
@@ -734,6 +1107,9 @@ function renderPhone(){
 
  <div class="phone-section"><h3>行事曆</h3>${cal.slice(0,5).map(c=>`<div class="story-card"><b>${c.date}｜${c.title}</b><div>${c.desc}</div><span class="tag">危險 ${c.danger}</span></div>`).join("")||"<p class='muted'>尚無行事曆。</p>"}</div>
 
+ <div class="phone-section"><h3>SNS 宇宙</h3>${(s.snsUniverse||[]).slice(0,6).map(f=>`<div class="feed-card"><div class="feed-head"><div class="avatar-bubble">${f.platform==="Bubble"?"🫧":f.platform==="Instagram"?"◎":f.platform==="X"?"𝕏":"💜"}</div><div><div class="feed-name">${f.author}</div><div class="feed-platform">${f.platform}｜影響 ${f.impact}</div></div></div><div>${f.text}</div></div>`).join("")||"<p class='muted'>尚無SNS宇宙動態。</p>"}</div>
+ <div class="phone-section"><h3>同居日常</h3>${(s.cohabLife||[]).slice(0,5).map(h=>`<div class="cozy-room"><b>${h.title}</b><div>${h.desc}</div><div class="room-grid"><div class="room-item">溫度 +${h.warmth}</div><div class="room-item">風險 +${h.risk}</div></div></div>`).join("")||"<p class='muted'>尚無同居日常。</p>"}</div>
+ <div class="phone-section"><h3>多年回憶相簿</h3><div class="memory-album-grid">${(s.memoryAlbum||[]).slice(0,6).map(a=>`<div class="memory-photo"><b>${a.title}</b><span>${a.year}年${a.month}月｜${a.desc}</span></div>`).join("")||"<p class='muted'>尚無多年回憶。</p>"}</div></div>
  <div class="phone-section"><h3>Dispatch 案件夾</h3>${dc.slice(0,5).map(d=>`<div class="story-card"><b>${d.title}</b><div>${d.desc}</div><span class="tag">${d.status}</span><span class="tag">危險 ${d.danger}</span></div>`).join("")||"<p class='muted'>尚無案件。</p>"}</div>
 
  <div class="phone-section"><h3>戀愛紀念冊</h3>${love.slice(0,6).map(l=>`<div class="story-card"><b>${l.year}年${l.month}月｜${l.title}</b><div>${l.desc}</div><span class="tag">${l.type}</span></div>`).join("")||"<p class='muted'>尚無紀念。</p>"}</div>
@@ -1051,13 +1427,133 @@ function renderPersonalityPanel(){
  ${(s.emotionalShadows||[]).map(x=>`<div class="shadow"><b>${x.year}年${x.month}月｜${x.title}</b><div>${x.desc}</div><span class="tag">重量 ${x.weight}</span></div>`).join("")||"<p class='muted'>尚無情緒陰影。</p>"}`;
 }
 
+
+function compactStateForSnapshot(){
+ return JSON.parse(JSON.stringify(current));
+}
+function saveSnapshot(label="自動快照"){
+ if(!current)return;
+ const s=current.state;
+ const snap={id:uid(),label,year:s.year,month:s.month,round:s.round,lifeStage:s.lifeStage,createdAt:new Date().toISOString(),data:compactStateForSnapshot()};
+ current.snapshots=current.snapshots||[];
+ current.snapshots.unshift(snap);
+ current.snapshots=current.snapshots.slice(0,20);
+ saveCurrent(); renderSnapshots();
+}
+function rewindSnapshot(id=null){
+ if(!current)return;
+ const snaps=current.snapshots||[];
+ const snap=id?snaps.find(x=>x.id===id):snaps[0];
+ if(!snap)return alert("目前沒有快照可以倒帶");
+ if(!confirm(`倒帶到「${snap.label}」？目前未存成分支的進度會被覆蓋。`))return;
+ const restored=JSON.parse(JSON.stringify(snap.data));
+ restored.snapshots=snaps;
+ current=restored;
+ saveCurrent();
+ renderAll(`【系統倒帶】\n\n已倒帶到：${snap.label}\n回合：${snap.round}\n時間：${snap.year}年${snap.month}月\n\n這不是世界重啟，只是你選擇回到另一條分歧前。`);
+}
+function branchCurrentSave(){
+ if(!current)return;
+ const saves=getSaves();
+ const branch=JSON.parse(JSON.stringify(current));
+ branch.id=uid();
+ branch.title=(current.title||"存檔")+"｜分支"+new Date().toLocaleString();
+ branch.createdAt=new Date().toISOString();
+ branch.branchFrom=current.id;
+ saves.unshift(branch);
+ setSaves(saves);
+ alert("已建立分支存檔，可回首頁讀取。");
+ renderSaves();
+}
+function renderSnapshots(){
+ if(!current)return;
+ const el=document.getElementById("snapshotPanel"); if(!el)return;
+ const snaps=current.snapshots||[];
+ el.innerHTML=`<h3>回合快照</h3>${snaps.map(x=>`<div class="snapshot"><b>${x.label}</b><div class="small">回合${x.round}｜${x.year}年${x.month}月｜${x.lifeStage||""}</div><button class="secondary mini" onclick="rewindSnapshot('${x.id}')">倒帶到這裡</button></div>`).join("")||"<p class='muted'>尚無快照。</p>"}`;
+}
+function addDispatchDeal(title,desc,cost=0,success=50){
+ const s=current.state;
+ s.dispatchDeals.unshift({id:uid(),year:s.year,month:s.month,title,desc,cost,success});
+ s.dispatchDeals=s.dispatchDeals.slice(0,50);
+}
+function addSecretBubbleSub(name,group){
+ const s=current.state;
+ let old=(s.secretBubbleSubs||[]).find(x=>x.name===name);
+ if(old){old.level=clamp((old.level||1)+1);old.lastUpdate="更新了新Bubble";return old}
+ const sub={id:uid(),name,group,level:1,lastUpdate:"剛訂閱，尚無明顯異常"};
+ s.secretBubbleSubs.unshift(sub); return sub;
+}
+function addGossipIntel(source,title,desc,cred=40,risk=20){
+ const s=current.state;
+ s.gossipIntel.unshift({id:uid(),year:s.year,month:s.month,source,title,desc,cred,risk});
+ s.gossipIntel=s.gossipIntel.slice(0,80);
+}
+function blackboxAction(type){
+ if(!current)return;
+ const s=current.state;
+ let story="";
+ if(type==="buyDispatch"){
+  const danger=(s.dispatchFocus||0)+(s.proofLevel||0)+rand([5,12,20]);
+  const success=clamp(90-danger+rand([-10,0,10]),5,95);
+  const cost=rand([30,50,80,120,200]);
+  const ok=Math.random()*100<success;
+  const title=ok?"D社照片暫時壓下":"D社談判失敗";
+  const desc=ok?`某組未公開照片被暫時壓下，但對方保留底片與時間線。這不是刪除，只是延後。`:`對方沒有接受買斷，反而提高了後續爆料價值。`;
+  addDispatchDeal(title,desc,cost,success);
+  s.dispatchFocus=clamp((s.dispatchFocus||0)+(ok?-10:15));
+  s.risk=clamp((s.risk||0)+(ok?-5:12));
+  story=`【黑箱操作｜D社照片買斷】\n\n結果：${title}\n\n${desc}\n\n成功率：${success}%｜代價指數：${cost}\n\n黑箱操作不是沒有代價，只是把風險換成另一種形式。`;
+ }
+ if(type==="leakCheck"){
+  const vault=s.photoVault||[];
+  if(!vault.length){
+    addPhotoVault("未知來源","模糊後台邊角，尚未確認人物",12);
+  }
+  const top=(s.photoVault||[]).slice(0,3).map(p=>`${p.source}：${p.desc}｜風險${p.risk}`).join("\n");
+  story=`【黑箱操作｜偷拍庫檢查】\n\n目前最危險的資料：\n${top}\n\n有些照片現在不會爆，但它們會等待最適合傷人的時間。`;
+ }
+ if(type==="subBubble"){
+  const pool=[["成燦","RIIZE"],["炤熙","RIIZE"],["Anton","RIIZE"],["NCT前輩","SM"],["同場後輩","打歌圈"],["合作對象","圈內"]];
+  const p=rand(pool);
+  const sub=addSecretBubbleSub(p[0],p[1]);
+  const msg=rand(["今天真的很累。","有人看起來心情不錯。","不要相信網路上全部的話。","雨天適合聽歌。","ㅋㅋㅋㅋ秘密"]);
+  sub.lastUpdate=msg;
+  addPhoneThread(`${p[0]} Bubble`,msg,"bubble",1);
+  story=`【黑箱操作｜偷偷訂閱Bubble】\n\n你偷偷訂閱了 ${p[0]}（${p[1]}）的Bubble。\n\n最新更新：\n「${msg}」\n\n這不一定和你有關，但在韓娛世界裡，所有句子都可能變成線索。`;
+ }
+ if(type==="gossip"){
+  const pool=[
+   ["造型組", "某團最近後台氣氛很怪", "有人說兩位成員最近常避開同一條走廊。", 35, 18],
+   ["打歌工作人員", "Challenge名單臨時更動", "原本排好的合作突然取消，理由寫得很模糊。", 48, 22],
+   ["站姐圈", "有大站暫停更新", "大站突然休站，粉圈開始猜是不是拍到不能發的東西。", 62, 35],
+   ["公司內線", "公關部深夜加班", "沒有指名，但看起來像在準備聲明模板。", 58, 40],
+   ["圈內朋友", "某對CP營業過頭", "粉絲嗑得很開心，公司卻開始降溫。", 44, 20]
+  ];
+  const g=rand(pool);
+  addGossipIntel(g[0],g[1],g[2],g[3],g[4]);
+  story=`【圈內八卦｜平行世界虛構】\n\n來源：${g[0]}\n標題：${g[1]}\n內容：${g[2]}\n\n可信度：${g[3]}%｜牽連風險：${g[4]}%`;
+ }
+ s.round++; updateWorldClock("hour"); s.lifeStage=lifeStage(); current.storyLog.push(story); saveCurrent(); renderAll(story);
+}
+function renderBlackbox(){
+ if(!current)return;
+ renderSnapshots();
+ const s=current.state;
+ const subs=document.getElementById("secretBubbleSubs");
+ if(subs)subs.innerHTML=(s.secretBubbleSubs||[]).map(x=>`<div class="bubble-sub"><div><b>${x.name}</b><div class="small">${x.group}｜Lv.${x.level}</div><div>${x.lastUpdate}</div></div><span class="badge">🫧</span></div>`).join("")||"<p class='muted'>尚未偷偷訂閱任何Bubble。</p>";
+ const gossip=document.getElementById("gossipPanel");
+ if(gossip)gossip.innerHTML=(s.gossipIntel||[]).map(g=>`<div class="gossip"><div class="rumor">${g.title}</div><div>${g.desc}</div><div class="truth">來源：${g.source}｜可信度 ${g.cred}%｜牽連風險 ${g.risk}%｜平行世界虛構</div></div>`).join("")||"<p class='muted'>尚無圈內八卦。</p>";
+ const deals=document.getElementById("dispatchDeals");
+ if(deals)deals.innerHTML=(s.dispatchDeals||[]).map(d=>`<div class="blackbox-card danger"><b>${d.title}</b><div>${d.desc}</div><div class="small">代價指數 ${d.cost}｜成功率 ${d.success}%</div><div class="deal-meter"><div style="width:${d.success}%"></div></div></div>`).join("")||"<p class='muted'>尚無D社交易紀錄。</p>";
+}
+
 function renderAll(text){
  if(!current)return;
  const s=current.state;
  document.getElementById("pname").textContent=s.ta;
  document.getElementById("pdesc").textContent=`${s.group}｜${s.company}｜${s.fandom}`;
  document.getElementById("story").textContent=text;
- renderChoices();renderStatus();renderMemories();renderMemoryClusters();renderRecallHooks();renderTimeline();renderNPCs();renderSNS();renderPhone();renderItems();renderUniverse();renderCompanyPanel();renderPersonalityPanel();renderLife();renderAIPrompt()
+ renderChoices();renderStatus();renderMemories();renderMemoryClusters();renderRecallHooks();renderTimeline();renderNPCs();renderSNS();renderPhone();renderItems();renderUniverse();renderCompanyPanel();renderPersonalityPanel();renderLife();renderIdolLife();renderBlackbox();renderAIPrompt()
 }
 function renderChoices(){
  const cs=[["A","低聲警告TA：不要再留下會被猜到的東西。"],["B","裝作沒事，繼續完成眼前的工作 / 場面。"],["C","試探追問：你剛剛那句，是故意說給我聽的嗎？"],["D","拉開距離，先保護自己。"]];
@@ -1183,8 +1679,8 @@ function downloadJSON(filename,obj){
  const a=document.createElement("a"); a.href=url; a.download=filename; a.click();
  setTimeout(()=>URL.revokeObjectURL(url),500);
 }
-function exportAllSaves(){downloadJSON("sasa-ultimate-v18-5-all-saves.json",{version:APP_VERSION,exportedAt:new Date().toISOString(),saves:getSaves()})}
-function exportOneSave(id){const s=getSaves().find(x=>x.id===id); if(!s)return; downloadJSON(`${s.title||"sasa-save"}-ultimate-v18-5.json`,{version:APP_VERSION,exportedAt:new Date().toISOString(),saves:[s]})}
+function exportAllSaves(){downloadJSON("sasa-ultimate-v22-all-saves.json",{version:APP_VERSION,exportedAt:new Date().toISOString(),saves:getSaves()})}
+function exportOneSave(id){const s=getSaves().find(x=>x.id===id); if(!s)return; downloadJSON(`${s.title||"sasa-save"}-ultimate-v22.json`,{version:APP_VERSION,exportedAt:new Date().toISOString(),saves:[s]})}
 function importSavesFile(ev){
  const file=ev.target.files[0]; if(!file)return;
  const reader=new FileReader();
@@ -1710,7 +2206,7 @@ function renderLife(){
  const box=document.getElementById("lifeEvents");
  if(box)box.innerHTML=(s.lifeEvents||[]).map(e=>`<div class="life-card ${e.type}"><b>${e.year}年${e.month}月｜${e.title}</b><div>${e.desc}</div><span class="tag">${e.type}</span></div>`).join("")||"<p class='muted'>尚無人生事件。</p>";
 }
-function tab(id,btn){["storyTab","memTab","timeTab","npcTab","snsTab","phoneTab","itemTab","universeTab","companyTab","personalityTab","lifeTab","aiTab"].forEach(x=>document.getElementById(x).classList.add("hidden"));document.getElementById(id).classList.remove("hidden");document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
+function tab(id,btn){["storyTab","memTab","timeTab","npcTab","snsTab","phoneTab","itemTab","universeTab","companyTab","personalityTab","lifeTab","idolTab","blackboxTab","aiTab"].forEach(x=>document.getElementById(x).classList.add("hidden"));document.getElementById(id).classList.remove("hidden");document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
 
 
 function showFinalGuide(){show("guide")}
