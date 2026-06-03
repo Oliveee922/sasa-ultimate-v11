@@ -1,6 +1,6 @@
 const rand=a=>a[Math.floor(Math.random()*a.length)];
 const clamp=n=>Math.max(0,Math.min(100,Math.round(n)));
-const APP_VERSION="Ultimate V24.1 Start Fix";
+const APP_VERSION="Ultimate V24.1 Instagram Universe";
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
 const KDB={
@@ -283,6 +283,8 @@ function startNewGame(){
  const ta=target==="隨機原創"?rand(["姜瑞允","韓律","尹采河","李成曜"]):target;
  const roles=[...document.querySelectorAll("#roleChecks input:checked")].map(x=>x.value);
  const role=roles.length?roles.join("＋"):"愛豆同行";
+ const rel=document.getElementById("relation").value;
+ const st=baseStats(rel);
  const isIdolSelf=roles.includes("愛豆同行");
  const idolRoles=[...document.querySelectorAll("#idolRolesBox input:checked")].map(x=>x.value);
  const myIdolSetup=isIdolSelf?{
@@ -300,8 +302,6 @@ function startNewGame(){
    strictCompany:!!document.getElementById("strictCompany")?.checked
   }
  }:null;
- const rel=document.getElementById("relation").value;
- const st=baseStats(rel);
  const npcs={};
  [...data.members,...data.same,...data.rivals,"經紀人","造型組長","品牌方PR"].forEach(n=>{
   if(!String(ta).toLowerCase().includes(String(n).toLowerCase())){
