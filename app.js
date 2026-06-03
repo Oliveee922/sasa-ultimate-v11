@@ -1,6 +1,6 @@
 const rand=a=>a[Math.floor(Math.random()*a.length)];
 const clamp=n=>Math.max(0,Math.min(100,Math.round(n)));
-const APP_VERSION="Ultimate V24.1 Instagram Universe";
+const APP_VERSION="Ultimate V24.1 Start Fix";
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
 const KDB={
@@ -170,11 +170,11 @@ function makeNpcPersonality(name,type){
 function updateIdolExtraVisibility(){
  const box=document.getElementById("idolExtra");
  if(!box)return;
- const checked=[...document.querySelectorAll("#ids input:checked")].map(x=>x.value);
+ const checked=[...document.querySelectorAll("#roleChecks input:checked")].map(x=>x.value);
  box.classList.toggle("hidden", !checked.includes("愛豆同行"));
 }
 setTimeout(()=>{
- document.querySelectorAll("#ids input").forEach(x=>x.addEventListener("change",updateIdolExtraVisibility));
+ document.querySelectorAll("#roleChecks input").forEach(x=>x.addEventListener("change",updateIdolExtraVisibility));
  updateIdolExtraVisibility();
 },0);
 
@@ -283,6 +283,23 @@ function startNewGame(){
  const ta=target==="隨機原創"?rand(["姜瑞允","韓律","尹采河","李成曜"]):target;
  const roles=[...document.querySelectorAll("#roleChecks input:checked")].map(x=>x.value);
  const role=roles.length?roles.join("＋"):"愛豆同行";
+ const isIdolSelf=roles.includes("愛豆同行");
+ const idolRoles=[...document.querySelectorAll("#idolRolesBox input:checked")].map(x=>x.value);
+ const myIdolSetup=isIdolSelf?{
+  groupName:(document.getElementById("myGroupName")?.value||rand(["AURORA","LUMINA","VIOLET","CIELO","ODD HEART"])),
+  company:document.getElementById("myCompany")?.value||"自創公司",
+  type:document.getElementById("myGroupType")?.value||"女團",
+  size:parseInt(document.getElementById("myGroupSize")?.value||"7",10),
+  debutStatus:document.getElementById("myDebutStatus")?.value||"出道3年",
+  vibe:document.getElementById("myGroupVibe")?.value||"吵吵鬧鬧組",
+  roles:idolRoles.length?idolRoles:["Center","主唱","團寵"],
+  romanceRules:{
+   inGroup:!!document.getElementById("allowInGroupLove")?.checked,
+   sameCompany:!!document.getElementById("allowSameCompanyLove")?.checked,
+   idolRumor:!!document.getElementById("allowIdolRumor")?.checked,
+   strictCompany:!!document.getElementById("strictCompany")?.checked
+  }
+ }:null;
  const rel=document.getElementById("relation").value;
  const st=baseStats(rel);
  const npcs={};
