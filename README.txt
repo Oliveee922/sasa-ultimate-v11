@@ -1,1 +1,10 @@
-💜 Ultimate V22 Idol Life Expansion：愛豆同行專屬設定、擔當可複選、團體設定、隊友生成、宿舍群、團體聊天室、隊友關係與愛豆人生事件。
+💜 Ultimate V24.1-1 Instagram Phase 1
+
+新增開發階段：
+- Instagram 個人檔案（規劃）
+- 粉絲數/追蹤中（規劃）
+- 發文系統（規劃）
+- 自由文案（規劃）
+
+此版本保留原有存檔與功能。
+下一階段將正式加入 Instagram UI。

@@ -1,6 +1,6 @@
 const rand=a=>a[Math.floor(Math.random()*a.length)];
 const clamp=n=>Math.max(0,Math.min(100,Math.round(n)));
-const APP_VERSION="Ultimate V22";
+const APP_VERSION="Ultimate V24.1 Instagram Universe";
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
 const KDB={
@@ -1553,7 +1553,7 @@ function renderAll(text){
  document.getElementById("pname").textContent=s.ta;
  document.getElementById("pdesc").textContent=`${s.group}｜${s.company}｜${s.fandom}`;
  document.getElementById("story").textContent=text;
- renderChoices();renderStatus();renderMemories();renderMemoryClusters();renderRecallHooks();renderTimeline();renderNPCs();renderSNS();renderPhone();renderItems();renderUniverse();renderCompanyPanel();renderPersonalityPanel();renderLife();renderIdolLife();renderBlackbox();renderAIPrompt()
+ renderChoices();renderStatus();renderMemories();renderMemoryClusters();renderRecallHooks();renderTimeline();renderNPCs();renderSNS();renderPhone();renderItems();renderUniverse();renderCompanyPanel();renderPersonalityPanel();renderLife();renderIdolLife();renderInstagram();renderBlackbox();renderAIPrompt()
 }
 function renderChoices(){
  const cs=[["A","低聲警告TA：不要再留下會被猜到的東西。"],["B","裝作沒事，繼續完成眼前的工作 / 場面。"],["C","試探追問：你剛剛那句，是故意說給我聽的嗎？"],["D","拉開距離，先保護自己。"]];
@@ -2206,7 +2206,7 @@ function renderLife(){
  const box=document.getElementById("lifeEvents");
  if(box)box.innerHTML=(s.lifeEvents||[]).map(e=>`<div class="life-card ${e.type}"><b>${e.year}年${e.month}月｜${e.title}</b><div>${e.desc}</div><span class="tag">${e.type}</span></div>`).join("")||"<p class='muted'>尚無人生事件。</p>";
 }
-function tab(id,btn){["storyTab","memTab","timeTab","npcTab","snsTab","phoneTab","itemTab","universeTab","companyTab","personalityTab","lifeTab","idolTab","blackboxTab","aiTab"].forEach(x=>document.getElementById(x).classList.add("hidden"));document.getElementById(id).classList.remove("hidden");document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
+function tab(id,btn){["storyTab","memTab","timeTab","npcTab","snsTab","phoneTab","instagramTab","itemTab","universeTab","companyTab","personalityTab","lifeTab","idolTab","blackboxTab","aiTab"].forEach(x=>document.getElementById(x).classList.add("hidden"));document.getElementById(id).classList.remove("hidden");document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
 
 
 function showFinalGuide(){show("guide")}
@@ -2229,3 +2229,13 @@ function renderPWAStatus(){
 
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 renderSaves();
+
+function renderInstagram(){
+ const p=document.getElementById("igProfile"); const f=document.getElementById("igFeed");
+ if(!p||!current)return;
+ const s=current.state;
+ p.innerHTML=`<div class="pill">@${(s.ta||"idol").toLowerCase().replace(/\s/g,"_")}_official</div>
+ <p>粉絲：${(s.fandomHeat||0)*1000+50000}｜追蹤中：${(s.round||1)+20}｜貼文：${(s.round||1)}</p>`;
+ f.innerHTML=`<div class="card"><b>${s.ta}</b><p>${s.latestChoice||"今天的天空很好看。"} ✨</p>
+ <small>❤️ ${(s.buzz||10)*100}　💬 ${(s.heart||10)}　📤 ${(s.risk||1)}</small></div>`;
+}
